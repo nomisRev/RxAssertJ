@@ -1,0 +1,6 @@
+apply plugin: 'java'
+
+dependencies {
+    testCompile(libraries.junit)
+    compile(libraries.assertj, libraries.rxjava)
+}

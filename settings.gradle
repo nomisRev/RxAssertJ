@@ -1,1 +1,1 @@
-include ':app'
+include ':rx2assertj', ':rxassertj'
