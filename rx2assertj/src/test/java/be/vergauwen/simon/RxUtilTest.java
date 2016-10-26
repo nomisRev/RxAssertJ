@@ -25,7 +25,7 @@ public class RxUtilTest {
     @Test
     public void testDoSomeFlowable() {
         rxUtil.getFlowableIntegers().subscribe(testSubscriber);
-        assertThatASubscriberTo(rxUtil.getFlowableIntegers()).hasReceivedCount(10).hasNoErrors().isComplete();
+        assertThatASubscriberTo(rxUtil.getFlowableIntegers()).hasValueCount(10).hasNoErrors().isComplete();
     }
 
     @Test
@@ -36,17 +36,17 @@ public class RxUtilTest {
     @Test
     public void testDoSomeRxing() {
         rxUtil.doSomeRxing().subscribe(testObserver);
-        Rx2AssertJ.assertThat(testObserver).hasNoErrors().hasReceivedCount(1).hasReceived(1L).isComplete();
+        Rx2AssertJ.assertThat(testObserver).hasNoErrors().hasValueCount(1).hasValue(1L).isComplete();
     }
 
     @Test
     public void testSomeLongRxing() {
-         assertThatASubscriberTo(rxUtil.doSomeLongRxing()).isComplete();
+         assertThatASubscriberTo(rxUtil.doSomeLongRxing()).isSubscribed().isComplete();
     }
 
     //15 : 610 = 2 x 5 x 61
     @Test
     public void testgetSomeSingleValue() {
-        assertThatASubscriberTo(rxUtil.getSomeSingleValue(15)).hasNoErrors().hasReceived(610L).isComplete();
+        assertThatASubscriberTo(rxUtil.getSomeSingleValue(15)).hasNoErrors().hasResult(610L).isComplete();
     }
 }
