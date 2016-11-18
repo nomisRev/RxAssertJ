@@ -3,7 +3,9 @@ buildscript {
 
         // LIBRARIES
         rxjava_version = "1.1.6"
-        rxjava2_version = "2.0.0-RC5"
+        rxjava2_version = "2.0.1"
+        retrolamda_version = "3.2.5"
+
 
         // TESTING
         junit_version = "4.12"
@@ -35,6 +37,7 @@ buildscript {
 
     }
     dependencies {
+        classpath "me.tatarka:gradle-retrolambda:$retrolamda_version"
 
     }
 }

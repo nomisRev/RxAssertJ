@@ -1,6 +1,23 @@
 apply plugin: 'java'
+apply plugin: 'me.tatarka.retrolambda'
 
 dependencies {
     testCompile(libraries.junit)
     compile(libraries.assertj, libraries.rxjava2)
+}
+
+String java8 = getJavaVersion(8)
+String java7 = getJavaVersion(7)
+retrolambda {
+    jdk java8 //have tried with JAVA8_HOME
+    oldJdk java7 //have tried with JAVA6_HOME
+    javaVersion JavaVersion.VERSION_1_7 //have matched the above with VERSION_1_6
+}
+
+String getJavaVersion(Integer v) {
+    def sout = new StringBuffer()
+    def proc = "/usr/libexec/java_home -v 1.$v".execute()
+    proc.consumeProcessOutput(sout, new StringBuffer())
+    proc.waitForOrKill(1000)
+    return sout.toString().replace("\n", "").replace("\r", "")
 }

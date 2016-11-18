@@ -8,10 +8,7 @@ import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.subscribers.TestSubscriber;
 
-public final class Rx2AssertJ {
-    private Rx2AssertJ() {
-    }
-
+public final class Rx2Assertions {
 
     public static <T> TestObserverAssert<T> assertThat(final TestObserver<T> subscriber) {
         return new TestObserverAssert<>(subscriber);
@@ -21,31 +18,31 @@ public final class Rx2AssertJ {
         return new TestSubscriberAssert<>(observer);
     }
 
-    public static <T> TestObserverAssert<T> assertThatASubscriberTo(final Observable<T> observable) {
+    public static <T> TestObserverAssert<T> assertThatSubscriberTo(final Observable<T> observable) {
         TestObserver<T> subscriber = new TestObserver<>();
         observable.subscribe(subscriber);
         return new TestObserverAssert<>(subscriber);
     }
 
-    public static <T> TestObserverAssert<T> assertThatASubscriberTo(final Completable completable) {
+    public static <T> TestObserverAssert<T> assertThatSubscriberTo(final Completable completable) {
         TestObserver<T> subscriber = new TestObserver<>();
         completable.subscribe(subscriber);
         return new TestObserverAssert<>(subscriber);
     }
 
-    public static <T> TestObserverAssert<T> assertThatASubscriberTo(final Single<T> single) {
+    public static <T> TestObserverAssert<T> assertThatSubscriberTo(final Single<T> single) {
         TestObserver<T> subscriber = new TestObserver<>();
         single.subscribe(subscriber);
         return new TestObserverAssert<>(subscriber);
     }
 
-    public static <T> TestObserverAssert<T> assertThatASubscriberTo(final Maybe<T> maybe) {
+    public static <T> TestObserverAssert<T> assertThatSubscriberTo(final Maybe<T> maybe) {
         TestObserver<T> subscriber = new TestObserver<>();
         maybe.subscribe(subscriber);
         return new TestObserverAssert<>(subscriber);
     }
 
-    public static <T> TestSubscriberAssert<T> assertThatASubscriberTo(final Flowable<T> flowable) {
+    public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Flowable<T> flowable) {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
         flowable.subscribe(subscriber);
         return new TestSubscriberAssert<>(subscriber);
@@ -85,5 +82,10 @@ public final class Rx2AssertJ {
             actual.assertSubscribed();
             return this;
         }
+    }
+
+
+    private Rx2Assertions() {
+        throw new AssertionError();
     }
 }
