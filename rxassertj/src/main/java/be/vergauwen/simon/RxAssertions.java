@@ -2,39 +2,39 @@ package be.vergauwen.simon;
 
 import org.assertj.core.api.AbstractObjectAssert;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Condition;
 import rx.Completable;
 import rx.Observable;
 import rx.Single;
 import rx.observables.BlockingObservable;
 import rx.observers.TestSubscriber;
 
-public final class RxAssertJ {
-    private RxAssertJ(){ }
-
+public final class RxAssertions {
 
     public static <T> TestSubscriberAssert<T> assertThat(final TestSubscriber<T> subscriber) {
         return new TestSubscriberAssert<>(subscriber);
     }
 
-    public static <T> TestSubscriberAssert<T> assertThatASubscriberTo(final Observable<T> observable) {
+    public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Observable<T> observable) {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
         observable.subscribe(subscriber);
         return new TestSubscriberAssert<>(subscriber);
     }
 
-    public static <T> TestSubscriberAssert<T> assertThatASubscriberTo(final BlockingObservable<T> observable) {
+    public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final BlockingObservable<T> observable) {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
         observable.subscribe(subscriber);
         return new TestSubscriberAssert<>(subscriber);
     }
 
-    public static <T> TestSubscriberAssert<T> assertThatASubscriberTo(final Completable completable) {
+    public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Completable completable) {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
         completable.subscribe(subscriber);
         return new TestSubscriberAssert<>(subscriber);
     }
 
-    public static <T> TestSubscriberAssert<T> assertThatASubscriberTo(final Single<T> single) {
+    public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Single<T> single) {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
         single.subscribe(subscriber);
         TestSubscriberAssert<T> testSubscriberAssert = new TestSubscriberAssert<>(subscriber);
@@ -86,6 +86,15 @@ public final class RxAssertJ {
         }
 
         /**
+         * Asserts that there are no onNext events received.
+         *
+         * @throws AssertionError if there were any onNext events
+         */
+        public TestSubscriberAssert<T> emitsNothing() {
+            return this.receivedNothing();
+        }
+
+        /**
          * Asserts that there is exactly one completion event.
          *
          * @throws AssertionError if there were zero, or more than one, onCompleted events
@@ -93,6 +102,15 @@ public final class RxAssertJ {
         public TestSubscriberAssert<T> isCompleted() {
             actual.assertCompleted();
             return this;
+        }
+
+        /**
+         * Asserts that there is exactly one completion event.
+         *
+         * @throws AssertionError if there were zero, or more than one, onCompleted events
+         */
+        public TestSubscriberAssert<T> completes() {
+            return this.isCompleted();
         }
 
         /**
@@ -116,6 +134,15 @@ public final class RxAssertJ {
         }
 
         /**
+         * Asserts that this {@code Subscriber} has received no {@code onError} notifications.
+         *
+         * @throws AssertionError if this {@code Subscriber} has received one or more {@code onError} notifications
+         */
+        public TestSubscriberAssert<T> withoutErrors() {
+            return this.hasNoErrors();
+        }
+
+        /**
          * Asserts that there is exactly one error event which is a subclass of the given class.
          *
          * @param clazz the class to check the error against.
@@ -125,5 +152,10 @@ public final class RxAssertJ {
             actual.assertError(clazz);
             return this;
         }
+    }
+
+
+    private RxAssertions() {
+        throw new AssertionError();
     }
 }
