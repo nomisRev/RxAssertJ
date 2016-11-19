@@ -1,6 +1,6 @@
 # RxJava AssertJ Assertions
 
-AssertJ matchers for cleaner and more fun testing of rxjava.
+A set of AssertJ assertions geared toward testing rxjava.
 
 Has a module for RxJava 1 as well as RxJava 2.
 
@@ -9,11 +9,13 @@ While the base reactive types now have a `test()` method that gives you a TestOb
 - because you want to leverage the AssertJ Conditions API
 - etc
 
+This library is an extension of [AssertJ][1] which aims to make it even easier to test RxJava 1 & 2.
+
 # Usage
 
 Lets first remind ourselves what we get from RxJava:
 
-**Regular assertions with TestObserver/TestSubscriber**
+**Regular assertions with RxJava's build-in TestObserver/TestSubscriber**
 ```java
 Maybe.just(1)
 	.map(v -> v + 1)
@@ -22,6 +24,8 @@ Maybe.just(1)
 	.assertNoErrors()
 	.assertComplete();
 ```
+
+And now with AssertJ-based assertions:
 
 **Assertions with RxAssertions**
 ```java
@@ -33,10 +37,12 @@ Rx2Assertions.assertThatSubscriberTo(Observable.empty())
 or
 
 ```java
-assertThatSubscriberTo(Observable.just("RxJava", "Assertions"))
-		.completes()
-		.withoutErrors()
-		.expectedValues("RxJava", "Assertions");
+Maybe<Integer> maybe = Maybe.just(1).map(v -> v + 1);
+
+assertThatSubscriberTo(maybe)
+        .hasValue(2)
+        .completes()
+        .withoutErrors();
 ```
 **AssertJ Conditions**
 
@@ -112,3 +118,5 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+[1]: http://joel-costigliola.github.io/assertj/
