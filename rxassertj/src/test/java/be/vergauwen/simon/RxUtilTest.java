@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import rx.observers.TestSubscriber;
 
-import static be.vergauwen.simon.RxAssertJ.assertThat;
-import static be.vergauwen.simon.RxAssertJ.assertThatASubscriberTo;
+import static be.vergauwen.simon.RxAssertions.assertThat;
+import static be.vergauwen.simon.RxAssertions.assertThatSubscriberTo;
 
 public class RxUtilTest {
     @Rule
@@ -31,12 +31,12 @@ public class RxUtilTest {
 
     @Test
     public void testSomeLongRxing() {
-        assertThatASubscriberTo(rxUtil.doSomeLongRxing()).isCompleted();
+        RxAssertions.assertThatSubscriberTo(rxUtil.doSomeLongRxing()).isCompleted();
     }
 
     //15 : 610 = 2 x 5 x 61
     @Test
     public void testgetSomeSingleValue() {
-        assertThatASubscriberTo(rxUtil.getSomeSingleValue(15)).hasNoErrors().hasReceived(610L).isCompleted();
+        assertThatSubscriberTo(rxUtil.getSomeSingleValue(15)).hasNoErrors().hasReceived(610L).isCompleted();
     }
 }

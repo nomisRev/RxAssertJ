@@ -26,6 +26,13 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     }
 
     /**
+     * Assert that this TestObserver/TestSubscriber received exactly one onComplete event.
+     */
+    public final AbstractTestConsumerAssert<T, P> completes() {
+        return this.isComplete();
+    }
+
+    /**
      * Assert that this TestObserver/TestSubscriber has not received any onComplete event.
      */
     public final AbstractTestConsumerAssert<T, P> isNotComplete() {
@@ -123,6 +130,13 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     public final AbstractTestConsumerAssert<T, P> hasNoValues() {
         actual.assertValueCount(0);
         return this;
+    }
+
+    /**
+     * Assert that this TestObserver/TestSubscriber has not received any onNext events.
+     */
+    public final AbstractTestConsumerAssert<T, P> emitsNothing() {
+        return this.hasNoValues();
     }
 
     /**

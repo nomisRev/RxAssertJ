@@ -2,7 +2,7 @@ buildscript {
     ext {
 
         // LIBRARIES
-        rxjava_version = "1.1.6"
+        rxjava_version = "1.2.2"
         rxjava2_version = "2.0.1"
         retrolamda_version = "3.2.5"
 

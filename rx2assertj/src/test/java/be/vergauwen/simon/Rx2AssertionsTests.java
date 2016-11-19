@@ -25,6 +25,22 @@ public class Rx2AssertionsTests {
     }
 
     @Test
+    public void emptyObservableShouldEmitNothing() throws Exception {
+        Rx2Assertions.assertThatSubscriberTo(Observable.empty())
+                .emitsNothing()
+                .completes()
+                .withoutErrors();
+    }
+
+    @Test
+    public void singleItemObservableShouldEmitOneValue() throws Exception {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just("one"))
+                .hasValueCount(1)
+                .completes()
+                .withoutErrors();
+    }
+
+    @Test
     public void allItemsShouldMeetCondition() throws Exception {
         Observable<String> observable = getJediStringEmittingObservable();
 
@@ -36,7 +52,7 @@ public class Rx2AssertionsTests {
         };
 
         Rx2Assertions.assertThatSubscriberTo(observable)
-                .isComplete()
+                .completes()
                 .withoutErrors()
                 .eachItemMatches(isNotNullOrEmpty);
     }
@@ -59,7 +75,7 @@ public class Rx2AssertionsTests {
         };
 
         Rx2Assertions.assertThatSubscriberTo(observable)
-                .isComplete()
+                .completes()
                 .withoutErrors()
                 .eachItemMatches(allOf(isNotNullOrEmpty, isJedi));
     }
@@ -76,7 +92,7 @@ public class Rx2AssertionsTests {
         };
 
         Rx2Assertions.assertThatSubscriberTo(observable)
-                .isComplete()
+                .completes()
                 .withoutErrors()
                 .noItemNotMatches(isNull);
     }

@@ -6,6 +6,13 @@ dependencies {
     compile(libraries.assertj, libraries.rxjava2)
 }
 
+test {
+    testLogging {
+        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        exceptionFormat 'full'
+    }
+}
+
 String java8 = getJavaVersion(8)
 String java7 = getJavaVersion(7)
 retrolambda {
