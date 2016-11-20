@@ -37,7 +37,7 @@ public class Rx2AssertionsSamples {
     @Test
     public void testDoSomeRxing() {
         dummyData.doSomeRxing().subscribe(testObserver);
-        assertThat(testObserver).hasNoErrors().hasValueCount(1).hasValue(1L).isComplete();
+        assertThat(testObserver).hasNoErrors().hasValueCount(1).hasSingleValue(1L).isComplete();
     }
 
     @Test

@@ -91,7 +91,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * Assert that this TestObserver/TestSubscriber received exactly one onNext value which is equal to the given value with respect to Objects.equals.
      * @param value the value to expect
      */
-    public final AbstractTestConsumerAssert<T, P> hasValue(T value) {
+    public final AbstractTestConsumerAssert<T, P> hasSingleValue(T value) {
         actual.assertValue(value);
         return this;
     }
@@ -100,7 +100,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * Asserts that this TestObserver/TestSubscriber received exactly one onNext value for which the provided predicate returns true.
      * @param valuePredicate the predicate that receives the onNext value and should return true for the expected value.
      */
-    public final AbstractTestConsumerAssert<T, P> hasValue(Predicate<T> valuePredicate) {
+    public final AbstractTestConsumerAssert<T, P> hasSingleValue(Predicate<T> valuePredicate) {
         actual.assertValue(valuePredicate);
         return this;
     }
@@ -214,6 +214,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * @see #hasFailure(Predicate, Object...)
      * @see #hasFailureAndMessage(Class, String, Object...)
      */
+    @SafeVarargs
     public final AbstractTestConsumerAssert<T, P> hasResult(T... values) {
         actual.assertSubscribed()
                 .assertValues(values)
@@ -285,7 +286,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     /**
      * Assert that the TestObserver/TestSubscriber/TestSubscriber has received a Disposable but no other events.
      */
-    public final AbstractTestConsumerAssert<T, P> hasEmpty() {
+    public final AbstractTestConsumerAssert<T, P> isNever() {
         actual.assertSubscribed()
                 .assertNoValues()
                 .assertNoErrors()
