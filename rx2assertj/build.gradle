@@ -38,7 +38,7 @@ String getJavaVersion(Integer javaVersion) {
     } else {
         println("See JAVA7_HOME and JAVA8_HOME environment variables")
 
-        javaHomeLocation = ""
+        def javaHomeLocation = ""
         switch (javaVersion) {
             case 7:
                 javaHomeLocation = System.getenv("JAVA7_HOME")
