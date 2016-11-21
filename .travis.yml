@@ -2,12 +2,7 @@ language: java
 
 jdk:
   - oraclejdk8
-
-env:
-  - JAVA7_HOME=/usr/lib/jvm/java-7-oracle
-  - JAVA8_HOME=/usr/lib/jvm/java-8-oracle
-
-
+  
 cache:
   directories:
     - $HOME/.gradle
