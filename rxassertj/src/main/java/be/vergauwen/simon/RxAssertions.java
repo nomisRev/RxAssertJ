@@ -152,6 +152,63 @@ public final class RxAssertions {
             actual.assertError(clazz);
             return this;
         }
+
+        /**
+         * Assert that all emitted items meet a {@link Condition}.
+         * @param condition the AssertJ {@link Condition} to check
+         */
+        public TestSubscriberAssert<T> eachItemMatches(final Condition<? super T> condition) {
+            Assertions.assertThat(actual.getOnNextEvents()).are(condition);
+            return this;
+        }
+
+        /**
+         * Assert that no emitted items meet a {@link Condition}.
+         * @param condition the AssertJ {@link Condition} to check
+         */
+        public TestSubscriberAssert<T> noItemNotMatches(final Condition<? super T> condition) {
+            Assertions.assertThat(actual.getOnNextEvents()).areNot(condition);
+            return this;
+        }
+
+        /**
+         * Assert that at least one of the emitted items meet a {@link Condition}.
+         * @param condition the AssertJ {@link Condition} to check
+         */
+        public TestSubscriberAssert<T> atLeastOneItemMatches(final Condition<? super T> condition) {
+            Assertions.assertThat(actual.getOnNextEvents()).areAtLeastOne(condition);
+            return this;
+        }
+
+        /**
+         * Assert that a {@link Condition} happens at least a certain number of times.
+         * @param times number of times the condition needs to be met at least
+         * @param condition the AssertJ {@link Condition} to check
+         */
+        public TestSubscriberAssert<T> areAtLeast(final int times, final Condition<? super T> condition) {
+            Assertions.assertThat(actual.getOnNextEvents()).areAtLeast(times, condition);
+            return this;
+        }
+
+        /**
+         * Assert that a {@link Condition} happens at most a certain number of times.
+         * @param times number of times the condition needs to be met at most
+         * @param condition the AssertJ {@link Condition} to check
+         */
+        public TestSubscriberAssert<T> areAtMost(final int times, final Condition<? super T> condition) {
+            Assertions.assertThat(actual.getOnNextEvents()).areAtMost(times, condition);
+            return this;
+        }
+
+        /**
+         * Assert that a {@link Condition} happens at exactly a certain number of times.
+         * @param times number of times the condition needs to be met
+         * @param condition the AssertJ {@link Condition} to check
+         */
+        public TestSubscriberAssert<T> areExactly(final int times, final Condition<? super T> condition) {
+            Assertions.assertThat(actual.getOnNextEvents()).areExactly(times, condition);
+            return this;
+        }
     }
 
 
