@@ -14,13 +14,13 @@ public class Rx2AssertionsSamples {
 
     private TestSubscriber<Integer> testSubscriber;
     private TestObserver<Long> testObserver;
-    private DummyObservables dummyData;
+    private ObservableBuilder dummyData;
 
     @Before
     public void setUp() {
         testSubscriber = new TestSubscriber<>();
         testObserver = new TestObserver<>();
-        dummyData = new DummyObservables();
+        dummyData = new ObservableBuilder();
     }
 
     @Test

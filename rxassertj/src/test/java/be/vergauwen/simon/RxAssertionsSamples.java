@@ -10,7 +10,7 @@ import rx.observers.TestSubscriber;
 import static be.vergauwen.simon.RxAssertions.assertThat;
 import static be.vergauwen.simon.RxAssertions.assertThatSubscriberTo;
 
-public class RxUtilTest {
+public class RxAssertionsSamples {
     @Rule
     public RxJavaTestRule rxJavaResetRule = new RxJavaTestRule();
 

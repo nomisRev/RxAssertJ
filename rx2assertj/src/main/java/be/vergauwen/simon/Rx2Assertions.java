@@ -48,7 +48,7 @@ public final class Rx2Assertions {
         return new TestSubscriberAssert<>(subscriber);
     }
 
-   static class TestObserverAssert<T> extends  AbstractTestConsumerAssert<T,TestObserver<T>> {
+   public static class TestObserverAssert<T> extends  AbstractTestConsumerAssert<T,TestObserver<T>> {
        public TestObserverAssert(final TestObserver<T> actual) {
            super(actual);
        }
@@ -66,7 +66,7 @@ public final class Rx2Assertions {
        }
    }
 
-    static class TestSubscriberAssert<T> extends  AbstractTestConsumerAssert<T,TestSubscriber<T>> {
+    public static class TestSubscriberAssert<T> extends  AbstractTestConsumerAssert<T,TestSubscriber<T>> {
         public TestSubscriberAssert(final TestSubscriber<T> actual) {
             super(actual);
         }

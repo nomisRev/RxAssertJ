@@ -43,7 +43,7 @@ public final class RxAssertions {
     }
 
 
-    static class TestSubscriberAssert<T> extends AbstractObjectAssert<TestSubscriberAssert<T>, TestSubscriber<T>> {
+    public static class TestSubscriberAssert<T> extends AbstractObjectAssert<TestSubscriberAssert<T>, TestSubscriber<T>> {
 
         public TestSubscriberAssert(final TestSubscriber<T> actual) {
             super(actual, TestSubscriberAssert.class);

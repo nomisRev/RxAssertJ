@@ -7,7 +7,7 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-public final class DummyObservables {
+public final class ObservableBuilder {
 
     public Observable<Long> doSomeRxing() {
         return Observable.just(1L);
