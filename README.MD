@@ -1,5 +1,8 @@
 # RxJava AssertJ Assertions
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build Status](https://travis-ci.org/nomisRev/RxAssertJ.svg?branch=master)](https://travis-ci.org/nomisRev/RxAssertJ)
+
 A set of AssertJ assertions geared toward testing rxjava.
 
 Has a module for RxJava 1 as well as RxJava 2.
