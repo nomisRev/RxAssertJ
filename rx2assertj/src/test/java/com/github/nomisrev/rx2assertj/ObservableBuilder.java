@@ -1,4 +1,4 @@
-package be.vergauwen.simon;
+package com.github.nomisrev.rx2assertj;
 
 
 import io.reactivex.Completable;
@@ -7,7 +7,21 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
+import java.util.Set;
+
+import static org.assertj.core.util.Sets.newLinkedHashSet;
+
 public final class ObservableBuilder {
+
+    static Set<String> JEDIS = newLinkedHashSet("Luke", "Yoda", "Obiwan");
+
+    static <T> Observable<T> getObservableWithTestException(Throwable testException, T... t) {
+        return Observable.fromArray(t).concatWith(Observable.error(testException));
+    }
+
+    static Observable<String> getJediStringEmittingObservable() {
+        return Observable.fromIterable(JEDIS);
+    }
 
     public Observable<Long> doSomeRxing() {
         return Observable.just(1L);

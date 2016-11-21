@@ -1,4 +1,4 @@
-package be.vergauwen.simon;
+package com.github.nomisrev.rxassertj;
 
 
 import org.junit.Before;
@@ -7,36 +7,36 @@ import org.junit.Test;
 
 import rx.observers.TestSubscriber;
 
-import static be.vergauwen.simon.RxAssertions.assertThat;
-import static be.vergauwen.simon.RxAssertions.assertThatSubscriberTo;
+import static com.github.nomisrev.rxassertj.RxAssertions.assertThat;
+import static com.github.nomisrev.rxassertj.RxAssertions.assertThatSubscriberTo;
 
 public class RxAssertionsSamples {
     @Rule
     public RxJavaTestRule rxJavaResetRule = new RxJavaTestRule();
 
     private TestSubscriber<Long> testSubscriber;
-    private RxUtil rxUtil;
+    private ObservableBuilder observableBuilder;
 
     @Before
     public void setUp() {
         testSubscriber = new TestSubscriber<>();
-        rxUtil = new RxUtil();
+        observableBuilder = new ObservableBuilder();
     }
 
     @Test
     public void testDoSomeRxing() {
-        rxUtil.doSomeRxing().subscribe(testSubscriber);
+        observableBuilder.doSomeRxing().subscribe(testSubscriber);
         assertThat(testSubscriber).hasNoErrors().hasReceivedCount(1).hasReceived(1L).isCompleted();
     }
 
     @Test
     public void testSomeLongRxing() {
-        RxAssertions.assertThatSubscriberTo(rxUtil.doSomeLongRxing()).isCompleted();
+        RxAssertions.assertThatSubscriberTo(observableBuilder.doSomeLongRxing()).isCompleted();
     }
 
     //15 : 610 = 2 x 5 x 61
     @Test
     public void testgetSomeSingleValue() {
-        assertThatSubscriberTo(rxUtil.getSomeSingleValue(15)).hasNoErrors().hasReceived(610L).isCompleted();
+        assertThatSubscriberTo(observableBuilder.getSomeSingleValue(15)).hasNoErrors().hasReceived(610L).isCompleted();
     }
 }

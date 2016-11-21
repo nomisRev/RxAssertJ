@@ -1,4 +1,4 @@
-package be.vergauwen.simon;
+package com.github.nomisrev.rxassertj;
 
 
 import org.junit.rules.TestRule;

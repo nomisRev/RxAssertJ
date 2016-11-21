@@ -1,4 +1,4 @@
-package be.vergauwen.simon;
+package com.github.nomisrev.rxassertj;
 
 import org.assertj.core.api.AbstractObjectAssert;
 
@@ -22,10 +22,18 @@ public final class RxAssertions {
         return new TestSubscriberAssert<>(subscriber);
     }
 
+    public static <T> TestSubscriberAssert<T> assertThat(final Observable<T> observable) {
+        return assertThatSubscriberTo(observable);
+    }
+
     public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final BlockingObservable<T> observable) {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
         observable.subscribe(subscriber);
         return new TestSubscriberAssert<>(subscriber);
+    }
+
+    public static <T> TestSubscriberAssert<T> assertThat(final BlockingObservable<T> observable) {
+        return assertThatSubscriberTo(observable);
     }
 
     public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Completable completable) {
@@ -34,12 +42,20 @@ public final class RxAssertions {
         return new TestSubscriberAssert<>(subscriber);
     }
 
+    public static <T> TestSubscriberAssert<T> assertThat(final Completable completable) {
+        return assertThatSubscriberTo(completable);
+    }
+
     public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Single<T> single) {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
         single.subscribe(subscriber);
         TestSubscriberAssert<T> testSubscriberAssert = new TestSubscriberAssert<>(subscriber);
         testSubscriberAssert.hasReceivedCount(1);
         return testSubscriberAssert;
+    }
+
+    public static <T> TestSubscriberAssert<T> assertThat(final Single<T> single) {
+        return assertThatSubscriberTo(single);
     }
 
 
@@ -166,7 +182,7 @@ public final class RxAssertions {
          * Assert that no emitted items meet a {@link Condition}.
          * @param condition the AssertJ {@link Condition} to check
          */
-        public TestSubscriberAssert<T> noItemNotMatches(final Condition<? super T> condition) {
+        public TestSubscriberAssert<T> noItemMatches(final Condition<? super T> condition) {
             Assertions.assertThat(actual.getOnNextEvents()).areNot(condition);
             return this;
         }

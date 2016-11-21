@@ -1,4 +1,4 @@
-package be.vergauwen.simon;
+package com.github.nomisrev.rx2assertj;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -24,10 +24,18 @@ public final class Rx2Assertions {
         return new TestObserverAssert<>(subscriber);
     }
 
+    public static <T> TestObserverAssert<T> assertThat(final Observable<T> observable) {
+        return assertThatSubscriberTo(observable);
+    }
+
     public static <T> TestObserverAssert<T> assertThatSubscriberTo(final Completable completable) {
         TestObserver<T> subscriber = new TestObserver<>();
         completable.subscribe(subscriber);
         return new TestObserverAssert<>(subscriber);
+    }
+
+    public static <T> TestObserverAssert<T> assertThat(final Completable completable) {
+        return assertThatSubscriberTo(completable);
     }
 
     public static <T> TestObserverAssert<T> assertThatSubscriberTo(final Single<T> single) {
@@ -36,16 +44,28 @@ public final class Rx2Assertions {
         return new TestObserverAssert<>(subscriber);
     }
 
+    public static <T> TestObserverAssert<T> assertThat(final Single<T> single) {
+        return assertThatSubscriberTo(single);
+    }
+
     public static <T> TestObserverAssert<T> assertThatSubscriberTo(final Maybe<T> maybe) {
         TestObserver<T> subscriber = new TestObserver<>();
         maybe.subscribe(subscriber);
         return new TestObserverAssert<>(subscriber);
     }
 
+    public static <T> TestObserverAssert<T> assertThat(final Maybe<T> maybe) {
+        return assertThatSubscriberTo(maybe);
+    }
+
     public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Flowable<T> flowable) {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
         flowable.subscribe(subscriber);
         return new TestSubscriberAssert<>(subscriber);
+    }
+
+    public static <T> TestSubscriberAssert<T> assertThat(final Flowable<T> flowable) {
+        return assertThatSubscriberTo(flowable);
     }
 
    public static class TestObserverAssert<T> extends  AbstractTestConsumerAssert<T,TestObserver<T>> {

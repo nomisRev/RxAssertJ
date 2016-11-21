@@ -1,4 +1,4 @@
-package be.vergauwen.simon;
+package com.github.nomisrev.rxassertj;
 
 import org.assertj.core.api.Condition;
 import org.junit.Before;
@@ -6,9 +6,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import rx.Observable;
 import rx.observers.TestSubscriber;
-
-import java.util.Objects;
-import java.util.Set;
 
 import static org.assertj.core.condition.AllOf.allOf;
 import static org.assertj.core.util.Sets.newLinkedHashSet;
@@ -19,12 +16,12 @@ public class RxAssertionsTests {
     public RxJavaTestRule rxJavaResetRule = new RxJavaTestRule();
 
     private TestSubscriber<Long> testSubscriber;
-    private RxUtil rxUtil;
+    private ObservableBuilder observableBuilder;
 
     @Before
     public void setUp() {
         testSubscriber = new TestSubscriber<>();
-        rxUtil = new RxUtil();
+        observableBuilder = new ObservableBuilder();
     }
 
     @Test
@@ -45,7 +42,7 @@ public class RxAssertionsTests {
 
     @Test
     public void allItemsShouldMeetCondition() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNotNullOrEmpty = new Condition<String>() {
             @Override
@@ -70,7 +67,7 @@ public class RxAssertionsTests {
 
     @Test
     public void allItemsShouldMeetCombinedConditions() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNotNullOrEmpty = new Condition<String>() {
             @Override
@@ -81,7 +78,7 @@ public class RxAssertionsTests {
         Condition<String> isJedi = new Condition<String>("jedi") {
             @Override
             public boolean matches(String value) {
-                return JEDIS.contains(value);
+                return ObservableBuilder.JEDIS.contains(value);
             }
         };
 
@@ -93,7 +90,7 @@ public class RxAssertionsTests {
 
     @Test
     public void allItemsShouldNotMeetCondition() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNull = new Condition<String>() {
             @Override
@@ -105,12 +102,26 @@ public class RxAssertionsTests {
         RxAssertions.assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
-                .noItemNotMatches(isNull);
+                .noItemMatches(isNull);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void noItemMatch() throws Exception {
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
+
+        Condition<String> isNotNullOrEmpty = new Condition<String>() {
+            @Override
+            public boolean matches(String value) {
+                return value != null && !value.isEmpty();
+            }
+        };
+        RxAssertions.assertThatSubscriberTo(observable)
+                .noItemMatches(isNotNullOrEmpty);
     }
 
     @Test
     public void atLeastOneItemShouldMeetCondition() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isLuke = new Condition<String>() {
             @Override
@@ -127,7 +138,7 @@ public class RxAssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void atLeastOneConditionCheckShouldFail() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isDarthVader = new Condition<String>() {
             @Override
@@ -144,7 +155,7 @@ public class RxAssertionsTests {
 
     @Test
     public void atLeastTwoItemsShouldMeetCondition() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
             @Override
@@ -161,7 +172,7 @@ public class RxAssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void atLeastConditionCheckShouldFail() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
             @Override
@@ -178,7 +189,7 @@ public class RxAssertionsTests {
 
     @Test
     public void atMostTwoItemsShouldMeetCondition() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
             @Override
@@ -195,7 +206,7 @@ public class RxAssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void atMostConditionCheckShouldFail() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
             @Override
@@ -212,7 +223,7 @@ public class RxAssertionsTests {
 
     @Test
     public void exactlyTwoItemsShouldMeetCondition() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
             @Override
@@ -229,7 +240,7 @@ public class RxAssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void areExactlyConditionCheckShouldFail() throws Exception {
-        Observable<String> observable = getJediStringEmittingObservable();
+        Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
             @Override
@@ -242,12 +253,6 @@ public class RxAssertionsTests {
                 .completes()
                 .withoutErrors()
                 .areExactly(3, containsTheLetterA);
-    }
-
-    private static Set<String> JEDIS = newLinkedHashSet("Luke", "Yoda", "Obiwan");
-
-    private Observable<String> getJediStringEmittingObservable() {
-        return Observable.from(JEDIS);
     }
 
     private static Condition<Object> FAILING_CONDITION = new Condition<Object>() {

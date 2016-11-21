@@ -1,4 +1,4 @@
-package be.vergauwen.simon;
+package com.github.nomisrev.rx2assertj;
 
 
 import org.junit.Before;
@@ -7,8 +7,8 @@ import org.junit.Test;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.subscribers.TestSubscriber;
 
-import static be.vergauwen.simon.Rx2Assertions.assertThat;
-import static be.vergauwen.simon.Rx2Assertions.assertThatSubscriberTo;
+import static com.github.nomisrev.rx2assertj.Rx2Assertions.assertThat;
+import static com.github.nomisrev.rx2assertj.Rx2Assertions.assertThatSubscriberTo;
 
 public class Rx2AssertionsSamples {
 

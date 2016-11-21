@@ -1,4 +1,4 @@
-package be.vergauwen.simon;
+package com.github.nomisrev.rx2assertj;
 
 
 import org.assertj.core.api.AbstractObjectAssert;
@@ -307,7 +307,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * Assert that no emitted items meet a {@link Condition}.
      * @param condition the AssertJ {@link Condition} to check
      */
-    public final AbstractTestConsumerAssert<T, P> noItemNotMatches(final Condition<? super T> condition) {
+    public final AbstractTestConsumerAssert<T, P> noItemMatches(final Condition<? super T> condition) {
         Assertions.assertThat(actual.values()).areNot(condition);
         return this;
     }

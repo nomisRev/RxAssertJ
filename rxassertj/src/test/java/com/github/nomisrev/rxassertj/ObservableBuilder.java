@@ -1,4 +1,4 @@
-package be.vergauwen.simon;
+package com.github.nomisrev.rxassertj;
 
 
 import rx.Completable;
@@ -6,7 +6,17 @@ import rx.Observable;
 import rx.Single;
 import rx.schedulers.Schedulers;
 
-public final class RxUtil {
+import java.util.Set;
+
+import static org.assertj.core.util.Sets.newLinkedHashSet;
+
+public final class ObservableBuilder {
+
+    static Set<String> JEDIS = newLinkedHashSet("Luke", "Yoda", "Obiwan");
+
+    static Observable<String> getJediStringEmittingObservable() {
+        return Observable.from(JEDIS);
+    }
 
     public Observable<Long> doSomeRxing() {
         return Observable.just(1L);
