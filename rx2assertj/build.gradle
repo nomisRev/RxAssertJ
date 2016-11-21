@@ -15,6 +15,7 @@ test {
     }
 }
 
+/*
 String java8 = getJavaVersion(8)
 String java7 = getJavaVersion(7)
 
@@ -53,4 +54,4 @@ String getJavaVersion(Integer javaVersion) {
     }
 
 
-}
+}*/
