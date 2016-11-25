@@ -31,86 +31,88 @@ public class Rx2AssertionsTests {
         testObserver = new TestObserver<Long>();
         testSubscription = new Subscription() {
             @Override
-            public void request(long n) { }
+            public void request(long n) {
+            }
 
             @Override
-            public void cancel() { }
+            public void cancel() {
+            }
         };
     }
 
     @Test(expected = AssertionError.class)
-    public void testIsNotCompleteFails() throws Exception {
+    public void testIsNotCompleteFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(1))
                 .isNotComplete();
     }
 
     @Test
-    public void testIsNotComplete() throws Exception {
+    public void testIsNotComplete() {
         Rx2Assertions.assertThatSubscriberTo(Observable.never())
                 .isNotComplete();
     }
 
     @Test
-    public void testIsNotTerminated() throws Exception {
+    public void testIsNotTerminated() {
         Rx2Assertions.assertThatSubscriberTo(Observable.never())
                 .isNotTerminated();
     }
 
     @Test(expected = AssertionError.class)
-    public void testIsNotTerminatedFails() throws Exception {
+    public void testIsNotTerminatedFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(1))
                 .isNotTerminated();
     }
 
     @Test
-    public void testIsComplete() throws Exception {
+    public void testIsComplete() {
         Rx2Assertions.assertThatSubscriberTo(Completable.complete())
                 .isComplete();
     }
 
     @Test(expected = AssertionError.class)
-    public void testIsCompleteFails() throws Exception {
+    public void testIsCompleteFails() {
         Rx2Assertions.assertThatSubscriberTo(Completable.never())
                 .isComplete();
     }
 
     @Test
-    public void testIsTerminated() throws Exception {
+    public void testIsTerminated() {
         Rx2Assertions.assertThatSubscriberTo(Maybe.error(testException)).isTerminated();
         Rx2Assertions.assertThatSubscriberTo(Maybe.just(1)).isTerminated();
     }
 
     @Test(expected = AssertionError.class)
-    public void testIsTerminatedWithFails() throws Exception {
+    public void testIsTerminatedWithFails() {
         Rx2Assertions.assertThatSubscriberTo(Maybe.never()).isTerminated();
     }
 
     @Test
-    public void testHasErrorInstance() throws Exception {
+    public void testHasErrorInstance() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
                 .hasError(testException);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasErrorInstanceFails() throws Exception {
+    public void testHasErrorInstanceFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(otherTestException))
                 .hasError(testException);
     }
 
     @Test
-    public void testHasError() throws Exception {
+    public void testHasError() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
                 .hasError(IllegalStateException.class);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasErrorFails() throws Exception {
+    public void testHasErrorFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(1))
                 .hasError(IllegalStateException.class);
     }
 
     @Test
-    public void testHasErrorWithPredicate() throws Exception {
+    public void testHasErrorWithPredicate() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
                 .hasError(new Predicate<Throwable>() {
                     @Override
@@ -121,7 +123,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasErrorWithPredicateFails() throws Exception {
+    public void testHasErrorWithPredicateFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
                 .hasError(new Predicate<Throwable>() {
                     @Override
@@ -132,7 +134,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void testHasValuePredicate() throws Exception {
+    public void testHasValuePredicate() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(ObservableBuilder.JEDIS))
                 .hasSingleValue(new Predicate<Set<String>>() {
                     @Override
@@ -143,7 +145,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasValuePredicateFails() throws Exception {
+    public void testHasValuePredicateFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(ObservableBuilder.JEDIS))
                 .hasSingleValue(new Predicate<Set<String>>() {
                     @Override
@@ -154,7 +156,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void testHasValueAtPredicate() throws Exception {
+    public void testHasValueAtPredicate() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
                 .hasValueAt(1, new Predicate<Integer>() {
                     @Override
@@ -165,7 +167,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasValueAtPredicateFails() throws Exception {
+    public void testHasValueAtPredicateFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
                 .hasValueAt(1, new Predicate<Integer>() {
                     @Override
@@ -176,86 +178,86 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void testHasValues() throws Exception {
+    public void testHasValues() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
                 .hasValues(1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasValuesFails() throws Exception {
+    public void testHasValuesFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
                 .hasValues(1, 3, 2);
     }
 
     @Test
-    public void testHasValuesSet() throws Exception {
+    public void testHasValuesSet() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
                 .hasValueSet(ObservableBuilder.JEDIS);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasValuesSetFails() throws Exception {
+    public void testHasValuesSetFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
                 .hasValueSet(new LinkedHashSet<String>());
     }
 
     @Test
-    public void testHasValuesSequence() throws Exception {
+    public void testHasValuesSequence() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
                 .hasValueSequence(ObservableBuilder.JEDIS);
     }
 
 
     @Test(expected = AssertionError.class)
-    public void testHasValuesSequenceFails() throws Exception {
+    public void testHasValuesSequenceFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
                 .hasValueSequence(new LinkedHashSet<String>());
     }
 
     @Test
-    public void testHasErrorMessage() throws Exception {
+    public void testHasErrorMessage() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
                 .hasErrorMessage(testExceptionMessage);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasErrorMessageFails() throws Exception {
+    public void testHasErrorMessageFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
                 .hasErrorMessage("Some other message");
     }
 
     @Test
-    public void testHasResults() throws Exception {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1,2,3,4))
-                .hasResult(1,2,3,4);
+    public void testHasResults() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(1, 2, 3, 4))
+                .hasResult(1, 2, 3, 4);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasResultsFails() throws Exception {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1,2,3,4))
-                .hasResult(1,2,3);
+    public void testHasResultsFails() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(1, 2, 3, 4))
+                .hasResult(1, 2, 3);
     }
 
     @Test
-    public void testHasFailure() throws Exception {
+    public void testHasFailure() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailure(IllegalStateException.class, 1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasFailureFailsWithDifferentException() throws Exception {
+    public void testHasFailureFailsWithDifferentException() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailure(IOException.class, 1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasFailureFailsWithDifferentValues() throws Exception {
+    public void testHasFailureFailsWithDifferentValues() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailure(IllegalStateException.class, 4, 5, 6);
     }
 
     @Test
-    public void testHasFailurePredicate() throws Exception {
+    public void testHasFailurePredicate() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailure(new Predicate<Throwable>() {
                     @Override
@@ -266,7 +268,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasFailurePredicateFailsWithDifferentException() throws Exception {
+    public void testHasFailurePredicateFailsWithDifferentException() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailure(new Predicate<Throwable>() {
                     @Override
@@ -277,7 +279,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasFailurePredicateFailsWithDifferentValues() throws Exception {
+    public void testHasFailurePredicateFailsWithDifferentValues() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailure(new Predicate<Throwable>() {
                     @Override
@@ -288,40 +290,60 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void testHasFailureWithMessage() throws Exception {
+    public void testHasFailureWithMessage() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailureAndMessage(IllegalStateException.class, testExceptionMessage, 1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasFailureWithMessageFailsWithDifferentException() throws Exception {
+    public void testHasFailureWithMessageFailsWithDifferentException() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailureAndMessage(IOException.class, testExceptionMessage, 1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasFailureWithMessageFailsWithDifferentMessage() throws Exception {
+    public void testHasFailureWithMessageFailsWithDifferentMessage() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailureAndMessage(IllegalStateException.class, "Some other message", 1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
-    public void testHasFailureWithMessageFailsWithDifferentValues() throws Exception {
+    public void testHasFailureWithMessageFailsWithDifferentValues() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
                 .hasFailureAndMessage(IOException.class, testExceptionMessage, 4, 5, 6);
     }
 
     @Test
+    public void streamShouldContain() {
+        Rx2Assertions.assertThatSubscriberTo(Flowable.just(1, 2, 3)).contains(1, 2);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void streamShouldContainShouldFail() {
+        Rx2Assertions.assertThatSubscriberTo(Flowable.just(1, 2, 3)).contains(4, 5);
+    }
+
+    @Test
+    public void streamShouldNotContain() {
+        Rx2Assertions.assertThatSubscriberTo(Flowable.just(1, 2, 3)).doesNotContain(4, 5);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void streamShouldNotContainShouldFail() {
+        Rx2Assertions.assertThatSubscriberTo(Flowable.just(1, 2, 3)).doesNotContain(1, 2);
+    }
+
+    @Test
     public void testAwaitDone() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1).delay(250,TimeUnit.MILLISECONDS))
-                .awaitDone(500,TimeUnit.MILLISECONDS)
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(1).delay(250, TimeUnit.MILLISECONDS))
+                .awaitDone(500, TimeUnit.MILLISECONDS)
                 .isComplete();
     }
 
     @Test(expected = AssertionError.class)
     public void testAwaitDoneFails() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1).delay(500,TimeUnit.MILLISECONDS))
-                .awaitDone(250,TimeUnit.MILLISECONDS)
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(1).delay(500, TimeUnit.MILLISECONDS))
+                .awaitDone(250, TimeUnit.MILLISECONDS)
                 .isComplete();
     }
 
@@ -333,7 +355,7 @@ public class Rx2AssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void testHasValueFailsMulitpleValues() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1,2))
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(1, 2))
                 .hasSingleValue(1);
     }
 
@@ -388,7 +410,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void emptyObservableShouldEmitNothing() throws Exception {
+    public void emptyObservableShouldEmitNothing() {
         Rx2Assertions.assertThatSubscriberTo(Observable.empty())
                 .emitsNothing()
                 .completes()
@@ -396,7 +418,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void singleItemObservableShouldEmitOneValue() throws Exception {
+    public void singleItemObservableShouldEmitOneValue() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just("one"))
                 .hasValueCount(1)
                 .completes()
@@ -404,7 +426,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void allItemsShouldMeetCondition() throws Exception {
+    public void allItemsShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNotNullOrEmpty = new Condition<String>() {
@@ -421,7 +443,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void allItemsConditionMatcherShouldFail() throws Exception {
+    public void allItemsConditionMatcherShouldFail() {
         Observable<Integer> observable = Observable.just(1);
 
         Rx2Assertions.assertThatSubscriberTo(observable)
@@ -429,7 +451,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void allItemsShouldMeetCombinedConditions() throws Exception {
+    public void allItemsShouldMeetCombinedConditions() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNotNullOrEmpty = new Condition<String>() {
@@ -452,7 +474,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void allItemsShouldNotMeetCondition() throws Exception {
+    public void allItemsShouldNotMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNull = new Condition<String>() {
@@ -469,7 +491,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void noItemMatch() throws Exception {
+    public void noItemMatch() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNotNullOrEmpty = new Condition<String>() {
@@ -483,7 +505,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void atLeastOneItemShouldMeetCondition() throws Exception {
+    public void atLeastOneItemShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isLuke = new Condition<String>() {
@@ -501,7 +523,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void atLeastOneConditionCheckShouldFail() throws Exception {
+    public void atLeastOneConditionCheckShouldFail() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isDarthVader = new Condition<String>() {
@@ -518,7 +540,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void atLeastTwoItemsShouldMeetCondition() throws Exception {
+    public void atLeastTwoItemsShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -536,7 +558,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void atLeastConditionCheckShouldFail() throws Exception {
+    public void atLeastConditionCheckShouldFail() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -553,7 +575,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void atMostTwoItemsShouldMeetCondition() throws Exception {
+    public void atMostTwoItemsShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -571,7 +593,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void atMostConditionCheckShouldFail() throws Exception {
+    public void atMostConditionCheckShouldFail() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -588,7 +610,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void exactlyTwoItemsShouldMeetCondition() throws Exception {
+    public void exactlyTwoItemsShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -606,7 +628,7 @@ public class Rx2AssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void areExactlyConditionCheckShouldFail() throws Exception {
+    public void areExactlyConditionCheckShouldFail() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
