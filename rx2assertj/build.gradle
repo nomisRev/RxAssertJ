@@ -1,10 +1,9 @@
 import org.gradle.internal.os.OperatingSystem;
 
 apply plugin: 'java'
-apply plugin: 'me.tatarka.retrolambda'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 dependencies {
     testCompile(libraries.junit)

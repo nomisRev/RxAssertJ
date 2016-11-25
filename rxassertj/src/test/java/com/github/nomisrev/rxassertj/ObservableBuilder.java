@@ -7,6 +7,7 @@ import rx.Single;
 import rx.schedulers.Schedulers;
 
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static org.assertj.core.util.Sets.newLinkedHashSet;
 
@@ -23,14 +24,22 @@ public final class ObservableBuilder {
     }
 
     public Completable doSomeLongRxing() {
-        return Completable.fromCallable(() -> {
-            Thread.sleep(2500);
-            return null;
+        return Completable.fromCallable(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                Thread.sleep(2500);
+                return null;
+            }
         }).subscribeOn(Schedulers.io());
     }
 
     public Single<Long> getSomeSingleValue(final int n) {
-        return Single.fromCallable(() -> fibonacci(n));
+        return Single.fromCallable(new Callable<Long>() {
+            @Override
+            public Long call() throws Exception {
+                return ObservableBuilder.this.fibonacci(n);
+            }
+        });
     }
 
     public long fibonacci(final int n) throws InterruptedException {

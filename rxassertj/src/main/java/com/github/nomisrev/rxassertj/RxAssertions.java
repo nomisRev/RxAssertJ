@@ -13,13 +13,13 @@ import rx.observers.TestSubscriber;
 public final class RxAssertions {
 
     public static <T> TestSubscriberAssert<T> assertThat(final TestSubscriber<T> subscriber) {
-        return new TestSubscriberAssert<>(subscriber);
+        return new TestSubscriberAssert<T>(subscriber);
     }
 
     public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Observable<T> observable) {
-        TestSubscriber<T> subscriber = new TestSubscriber<>();
+        TestSubscriber<T> subscriber = new TestSubscriber<T>();
         observable.subscribe(subscriber);
-        return new TestSubscriberAssert<>(subscriber);
+        return new TestSubscriberAssert<T>(subscriber);
     }
 
     public static <T> TestSubscriberAssert<T> assertThat(final Observable<T> observable) {
@@ -27,9 +27,9 @@ public final class RxAssertions {
     }
 
     public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final BlockingObservable<T> observable) {
-        TestSubscriber<T> subscriber = new TestSubscriber<>();
+        TestSubscriber<T> subscriber = new TestSubscriber<T>();
         observable.subscribe(subscriber);
-        return new TestSubscriberAssert<>(subscriber);
+        return new TestSubscriberAssert<T>(subscriber);
     }
 
     public static <T> TestSubscriberAssert<T> assertThat(final BlockingObservable<T> observable) {
@@ -37,9 +37,9 @@ public final class RxAssertions {
     }
 
     public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Completable completable) {
-        TestSubscriber<T> subscriber = new TestSubscriber<>();
+        TestSubscriber<T> subscriber = new TestSubscriber<T>();
         completable.subscribe(subscriber);
-        return new TestSubscriberAssert<>(subscriber);
+        return new TestSubscriberAssert<T>(subscriber);
     }
 
     public static <T> TestSubscriberAssert<T> assertThat(final Completable completable) {
@@ -47,9 +47,9 @@ public final class RxAssertions {
     }
 
     public static <T> TestSubscriberAssert<T> assertThatSubscriberTo(final Single<T> single) {
-        TestSubscriber<T> subscriber = new TestSubscriber<>();
+        TestSubscriber<T> subscriber = new TestSubscriber<T>();
         single.subscribe(subscriber);
-        TestSubscriberAssert<T> testSubscriberAssert = new TestSubscriberAssert<>(subscriber);
+        TestSubscriberAssert<T> testSubscriberAssert = new TestSubscriberAssert<T>(subscriber);
         testSubscriberAssert.hasValueCount(1);
         return testSubscriberAssert;
     }

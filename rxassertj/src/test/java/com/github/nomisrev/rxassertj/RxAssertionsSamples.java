@@ -19,7 +19,7 @@ public class RxAssertionsSamples {
 
     @Before
     public void setUp() {
-        testSubscriber = new TestSubscriber<>();
+        testSubscriber = new TestSubscriber<Long>();
         observableBuilder = new ObservableBuilder();
     }
 
