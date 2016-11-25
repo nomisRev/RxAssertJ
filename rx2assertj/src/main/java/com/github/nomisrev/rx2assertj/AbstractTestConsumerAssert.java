@@ -18,6 +18,16 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     }
 
     /**
+     * Assert that the onSubscribe method was called exactly once.
+     */
+    public abstract AbstractTestConsumerAssert<T, P> isSubscribed();
+
+    /**
+     * Assert that the onSubscribe method hasn't been called at all.
+     */
+    public abstract AbstractTestConsumerAssert<T, P> isNotSubscribed();
+
+    /**
      * Assert that this TestObserver/TestSubscriber received exactly one onComplete event.
      */
     public final AbstractTestConsumerAssert<T, P> isComplete() {
@@ -37,6 +47,22 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      */
     public final AbstractTestConsumerAssert<T, P> isNotComplete() {
         actual.assertNotComplete();
+        return this;
+    }
+
+    /**
+     * Assert that the TestObserver/TestSubscriber terminated (i.e., the terminal latch reached zero).
+     */
+    public final AbstractTestConsumerAssert<T, P> isTerminated() {
+        actual.assertTerminated();
+        return this;
+    }
+
+    /**
+     * Assert that the TestObserver/TestSubscriber has not terminated (i.e., the terminal latch is still non-zero).
+     */
+    public final AbstractTestConsumerAssert<T, P> isNotTerminated() {
+        actual.assertNotTerminated();
         return this;
     }
 
@@ -88,6 +114,65 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     }
 
     /**
+     * Assert that there is a single error and it has the given message.
+     * @param message the message expected
+     */
+    public final AbstractTestConsumerAssert<T, P> hasErrorMessage(String message) {
+        actual.assertErrorMessage(message);
+        return this;
+    }
+
+    /**
+     * Assert that the upstream signalled the specified values in order and then failed with a specific class or subclass of Throwable.
+     * Follows the functionality of {@link BaseTestConsumer#assertFailure(Class, Object[])}
+     *
+     * @param error the expected exception (parent) class
+     * @param values the expected values, asserted in order
+     */
+    public final AbstractTestConsumerAssert<T, P> hasFailure(Class<? extends Throwable> error, T... values) {
+        actual.assertSubscribed()
+                .assertValues(values)
+                .assertError(error)
+                .assertNotComplete();
+        return this;
+    }
+
+    /**
+     * Assert that the upstream signalled the specified values in order and then failed with a Throwable for which the provided predicate returns true.
+     * Follows the functionality of {@link BaseTestConsumer#assertFailure(Predicate, Object[])}
+     *
+     * @param errorPredicate
+     *            the predicate that receives the error Throwable
+     *            and should return true for expected errors.
+     * @param values the expected values, asserted in order
+     */
+    public final AbstractTestConsumerAssert<T, P> hasFailure(Predicate<Throwable> errorPredicate, T... values) {
+        actual.assertSubscribed()
+                .assertValues(values)
+                .assertError(errorPredicate)
+                .assertNotComplete();
+        return this;
+    }
+
+    /**
+     * Assert that the upstream signalled the specified values in order,
+     * then failed with a specific class or subclass of Throwable and with the given exact error message.
+     * Follows the functionality of {@link BaseTestConsumer#assertFailureAndMessage(Class, String, Object[])}
+     *
+     * @param error the expected exception (parent) class
+     * @param message the expected failure message
+     * @param values the expected values, asserted in order
+     */
+    public final AbstractTestConsumerAssert<T, P> hasFailureAndMessage(Class<? extends Throwable> error, String message, T... values) {
+        actual.assertSubscribed()
+                .assertValues(values)
+                .assertError(error)
+                .assertErrorMessage(message)
+                .assertNotComplete();
+        return this;
+    }
+
+    /**
      * Assert that this TestObserver/TestSubscriber received exactly one onNext value which is equal to the given value with respect to Objects.equals.
      * @param value the value to expect
      */
@@ -125,21 +210,6 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     }
 
     /**
-     * Assert that this TestObserver/TestSubscriber has not received any onNext events.
-     */
-    public final AbstractTestConsumerAssert<T, P> hasNoValues() {
-        actual.assertValueCount(0);
-        return this;
-    }
-
-    /**
-     * Assert that this TestObserver/TestSubscriber has not received any onNext events.
-     */
-    public final AbstractTestConsumerAssert<T, P> emitsNothing() {
-        return this.hasNoValues();
-    }
-
-    /**
      * Assert that the TestObserver/TestSubscriber received only the specified values in the specified order.
      * @param values the values expected
      * @see #hasValueSet(Collection)
@@ -172,43 +242,9 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     }
 
     /**
-     * Assert that the TestObserver/TestSubscriber terminated (i.e., the terminal latch reached zero).
-     */
-    public final AbstractTestConsumerAssert<T, P> isTerminated() {
-        actual.assertTerminated();
-        return this;
-    }
-
-    /**
-     * Assert that the TestObserver/TestSubscriber has not terminated (i.e., the terminal latch is still non-zero).
-     */
-    public final AbstractTestConsumerAssert<T, P> isNotTerminated() {
-        actual.assertNotTerminated();
-        return this;
-    }
-
-    /**
-     * Assert that there is a single error and it has the given message.
-     * @param message the message expected
-     */
-    public final AbstractTestConsumerAssert<T, P> hasErrorMessage(String message) {
-        actual.assertErrorMessage(message);
-        return this;
-    }
-
-    /**
-     * Assert that the onSubscribe method was called exactly once.
-     */
-    public abstract AbstractTestConsumerAssert<T, P> isSubscribed();
-
-    /**
-     * Assert that the onSubscribe method hasn't been called at all.
-     */
-    public abstract AbstractTestConsumerAssert<T, P> isNotSubscribed();
-
-    /**
-     * Assert that the upstream signalled the specified values in order and
-     * completed normally.
+     * Assert that the upstream signalled the specified values in order and completed normally.
+     * Follows the functionality of {@link BaseTestConsumer#assertResult(Object[])}
+     *
      * @param values the expected values, asserted in order
      * @see #hasFailure(Class, Object...)
      * @see #hasFailure(Predicate, Object...)
@@ -224,50 +260,18 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     }
 
     /**
-     * Assert that the upstream signalled the specified values in order
-     * and then failed with a specific class or subclass of Throwable.
-     * @param error the expected exception (parent) class
-     * @param values the expected values, asserted in order
+     * Assert that this TestObserver/TestSubscriber has not received any onNext events.
      */
-    public final AbstractTestConsumerAssert<T, P> hasFailure(Class<? extends Throwable> error, T... values) {
-        actual.assertSubscribed()
-                .assertValues(values)
-                .assertError(error)
-                .assertNotComplete();
+    public final AbstractTestConsumerAssert<T, P> hasNoValues() {
+        actual.assertValueCount(0);
         return this;
     }
 
     /**
-     * Assert that the upstream signalled the specified values in order and then failed
-     * with a Throwable for which the provided predicate returns true.
-     * @param errorPredicate
-     *            the predicate that receives the error Throwable
-     *            and should return true for expected errors.
-     * @param values the expected values, asserted in order
+     * Assert that this TestObserver/TestSubscriber has not received any onNext events.
      */
-    public final AbstractTestConsumerAssert<T, P> hasFailure(Predicate<Throwable> errorPredicate, T... values) {
-        actual.assertSubscribed()
-                .assertValues(values)
-                .assertError(errorPredicate)
-                .assertNotComplete();
-        return this;
-    }
-
-    /**
-     * Assert that the upstream signalled the specified values in order,
-     * then failed with a specific class or subclass of Throwable
-     * and with the given exact error message.
-     * @param error the expected exception (parent) class
-     * @param message the expected failure message
-     * @param values the expected values, asserted in order
-     */
-    public final AbstractTestConsumerAssert<T, P> hasFailureAndMessage(Class<? extends Throwable> error, String message, T... values) {
-        actual.assertSubscribed()
-                .assertValues(values)
-                .assertError(error)
-                .assertErrorMessage(message)
-                .assertNotComplete();
-        return this;
+    public final AbstractTestConsumerAssert<T, P> emitsNothing() {
+        return this.hasNoValues();
     }
 
     /**
@@ -279,18 +283,6 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      */
     public final AbstractTestConsumerAssert<T, P> awaitDone(long time, TimeUnit unit) {
         actual.awaitDone(time,unit);
-        return this;
-    }
-
-
-    /**
-     * Assert that the TestObserver/TestSubscriber/TestSubscriber has received a Disposable but no other events.
-     */
-    public final AbstractTestConsumerAssert<T, P> isNever() {
-        actual.assertSubscribed()
-                .assertNoValues()
-                .assertNoErrors()
-                .assertNotComplete();
         return this;
     }
 
@@ -326,8 +318,28 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * @param times number of times the condition needs to be met at least
      * @param condition the AssertJ {@link Condition} to check
      */
+    public final AbstractTestConsumerAssert<T, P> haveAtLeast(final int times, final Condition<? super T> condition) {
+        Assertions.assertThat(actual.values()).haveAtLeast(times, condition);
+        return this;
+    }
+
+    /**
+     * Assert that a {@link Condition} happens at least a certain number of times.
+     * @param times number of times the condition needs to be met at least
+     * @param condition the AssertJ {@link Condition} to check
+     */
     public final AbstractTestConsumerAssert<T, P> areAtLeast(final int times, final Condition<? super T> condition) {
         Assertions.assertThat(actual.values()).areAtLeast(times, condition);
+        return this;
+    }
+
+    /**
+     * Assert that a {@link Condition} happens at most a certain number of times.
+     * @param times number of times the condition needs to be met at most
+     * @param condition the AssertJ {@link Condition} to check
+     */
+    public final AbstractTestConsumerAssert<T, P> haveAtMost(final int times, final Condition<? super T> condition) {
+        Assertions.assertThat(actual.values()).haveAtMost(times, condition);
         return this;
     }
 
@@ -346,9 +358,18 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * @param times number of times the condition needs to be met
      * @param condition the AssertJ {@link Condition} to check
      */
+    public final AbstractTestConsumerAssert<T, P> haveExactly(final int times, final Condition<? super T> condition) {
+        Assertions.assertThat(actual.values()).haveExactly(times, condition);
+        return this;
+    }
+
+    /**
+     * Assert that a {@link Condition} happens at exactly a certain number of times.
+     * @param times number of times the condition needs to be met
+     * @param condition the AssertJ {@link Condition} to check
+     */
     public final AbstractTestConsumerAssert<T, P> areExactly(final int times, final Condition<? super T> condition) {
         Assertions.assertThat(actual.values()).areExactly(times, condition);
         return this;
     }
-
 }

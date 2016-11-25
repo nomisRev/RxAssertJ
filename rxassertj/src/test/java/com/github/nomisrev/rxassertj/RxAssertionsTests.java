@@ -35,7 +35,7 @@ public class RxAssertionsTests {
     @Test
     public void singleItemObservableShouldEmitOneValue() throws Exception {
         RxAssertions.assertThatSubscriberTo(Observable.just("one"))
-                .hasReceivedCount(1)
+                .hasValueCount(1)
                 .completes()
                 .withoutErrors();
     }

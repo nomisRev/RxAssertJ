@@ -73,12 +73,18 @@ public final class Rx2Assertions {
            super(actual);
        }
 
+       /**
+        * {@inheritDoc}
+        */
        @Override
        public AbstractTestConsumerAssert<T, TestObserver<T>> isNotSubscribed() {
            actual.assertNotSubscribed();
            return this;
        }
 
+       /**
+        * {@inheritDoc}
+        */
        @Override
        public AbstractTestConsumerAssert<T, TestObserver<T>> isSubscribed() {
            actual.assertSubscribed();
@@ -91,12 +97,18 @@ public final class Rx2Assertions {
             super(actual);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public AbstractTestConsumerAssert<T, TestSubscriber<T>> isNotSubscribed() {
             actual.assertNotSubscribed();
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public AbstractTestConsumerAssert<T, TestSubscriber<T>> isSubscribed() {
             actual.assertSubscribed();

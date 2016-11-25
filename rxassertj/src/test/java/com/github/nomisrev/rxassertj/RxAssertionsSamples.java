@@ -26,7 +26,7 @@ public class RxAssertionsSamples {
     @Test
     public void testDoSomeRxing() {
         observableBuilder.doSomeRxing().subscribe(testSubscriber);
-        assertThat(testSubscriber).hasNoErrors().hasReceivedCount(1).hasReceived(1L).isCompleted();
+        assertThat(testSubscriber).hasNoErrors().hasValueCount(1).hasValues(1L).isCompleted();
     }
 
     @Test
@@ -37,6 +37,6 @@ public class RxAssertionsSamples {
     //15 : 610 = 2 x 5 x 61
     @Test
     public void testgetSomeSingleValue() {
-        assertThatSubscriberTo(observableBuilder.getSomeSingleValue(15)).hasNoErrors().hasReceived(610L).isCompleted();
+        assertThatSubscriberTo(observableBuilder.getSomeSingleValue(15)).hasNoErrors().hasValues(610L).isCompleted();
     }
 }

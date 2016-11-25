@@ -50,7 +50,7 @@ public final class RxAssertions {
         TestSubscriber<T> subscriber = new TestSubscriber<>();
         single.subscribe(subscriber);
         TestSubscriberAssert<T> testSubscriberAssert = new TestSubscriberAssert<>(subscriber);
-        testSubscriberAssert.hasReceivedCount(1);
+        testSubscriberAssert.hasValueCount(1);
         return testSubscriberAssert;
     }
 
@@ -63,51 +63,6 @@ public final class RxAssertions {
 
         public TestSubscriberAssert(final TestSubscriber<T> actual) {
             super(actual, TestSubscriberAssert.class);
-        }
-
-        /**
-         * Asserts that this {@code Subscriber} is unsubscribed.
-         *
-         * @throws AssertionError if this {@code Subscriber} is not unsubscribed
-         */
-        public TestSubscriberAssert<T> isUnsubscribed() {
-            actual.assertUnsubscribed();
-            return this;
-        }
-
-        /**
-         * Asserts that the received onNext events, in order, are the specified items.
-         *
-         * @param values the items to check
-         * @throws AssertionError if the items emitted do not exactly match those specified by {@code values}
-         */
-        public TestSubscriberAssert<T> hasReceived(final T... values) {
-            actual.assertValues(values);
-            return this;
-        }
-
-        public TestSubscriberAssert<T> hasReceivedCount(final int count) {
-            actual.assertValueCount(count);
-            return this;
-        }
-
-        /**
-         * Asserts that there are no onNext events received.
-         *
-         * @throws AssertionError if there were any onNext events
-         */
-        public TestSubscriberAssert<T> receivedNothing() {
-            actual.assertNoValues();
-            return this;
-        }
-
-        /**
-         * Asserts that there are no onNext events received.
-         *
-         * @throws AssertionError if there were any onNext events
-         */
-        public TestSubscriberAssert<T> emitsNothing() {
-            return this.receivedNothing();
         }
 
         /**
@@ -167,6 +122,51 @@ public final class RxAssertions {
         public TestSubscriberAssert<T> hasError(final Class<? extends Throwable> clazz) {
             actual.assertError(clazz);
             return this;
+        }
+
+        /**
+         * Asserts that this {@code Subscriber} is unsubscribed.
+         *
+         * @throws AssertionError if this {@code Subscriber} is not unsubscribed
+         */
+        public TestSubscriberAssert<T> isUnsubscribed() {
+            actual.assertUnsubscribed();
+            return this;
+        }
+
+        /**
+         * Asserts that the received onNext events, in order, are the specified items.
+         *
+         * @param values the items to check
+         * @throws AssertionError if the items emitted do not exactly match those specified by {@code values}
+         */
+        public TestSubscriberAssert<T> hasValues(final T... values) {
+            actual.assertValues(values);
+            return this;
+        }
+
+        public TestSubscriberAssert<T> hasValueCount(final int count) {
+            actual.assertValueCount(count);
+            return this;
+        }
+
+        /**
+         * Asserts that there are no onNext events received.
+         *
+         * @throws AssertionError if there were any onNext events
+         */
+        public TestSubscriberAssert<T> receivedNothing() {
+            actual.assertNoValues();
+            return this;
+        }
+
+        /**
+         * Asserts that there are no onNext events received.
+         *
+         * @throws AssertionError if there were any onNext events
+         */
+        public TestSubscriberAssert<T> emitsNothing() {
+            return this.receivedNothing();
         }
 
         /**

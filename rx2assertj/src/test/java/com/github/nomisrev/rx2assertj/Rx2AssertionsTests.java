@@ -35,17 +35,6 @@ public class Rx2AssertionsTests {
         };
     }
 
-    @Test
-    public void emptyObservableisEmpty() throws Exception {
-        Rx2Assertions.assertThatSubscriberTo(Observable.never()).isNever();
-    }
-
-    @Test(expected = AssertionError.class)
-    public void emptyObservableisEmptyFails() throws Exception {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1))
-                .isNever();
-    }
-
     @Test(expected = AssertionError.class)
     public void testIsNotCompleteFails() throws Exception {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(1))
@@ -494,7 +483,7 @@ public class Rx2AssertionsTests {
         Rx2Assertions.assertThatSubscriberTo(observable)
                 .isComplete()
                 .withoutErrors()
-                .areAtLeast(2, containsTheLetterA);
+                .haveAtLeast(2, containsTheLetterA);
 
     }
 
@@ -512,7 +501,7 @@ public class Rx2AssertionsTests {
         Rx2Assertions.assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
-                .areAtLeast(3, containsTheLetterA);
+                .haveAtLeast(3, containsTheLetterA);
     }
 
     @Test
@@ -529,7 +518,7 @@ public class Rx2AssertionsTests {
         Rx2Assertions.assertThatSubscriberTo(observable)
                 .isComplete()
                 .withoutErrors()
-                .areAtMost(2, containsTheLetterA);
+                .haveAtMost(2, containsTheLetterA);
 
     }
 
@@ -547,7 +536,7 @@ public class Rx2AssertionsTests {
         Rx2Assertions.assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
-                .areAtMost(1, containsTheLetterA);
+                .haveAtMost(1, containsTheLetterA);
     }
 
     @Test
@@ -564,7 +553,7 @@ public class Rx2AssertionsTests {
         Rx2Assertions.assertThatSubscriberTo(observable)
                 .isComplete()
                 .withoutErrors()
-                .areExactly(2, containsTheLetterA);
+                .haveExactly(2, containsTheLetterA);
 
     }
 
@@ -582,7 +571,7 @@ public class Rx2AssertionsTests {
         Rx2Assertions.assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
-                .areExactly(3, containsTheLetterA);
+                .haveExactly(3, containsTheLetterA);
     }
 
     private static Condition<Object> FAILING_CONDITION = new Condition<Object>() {
