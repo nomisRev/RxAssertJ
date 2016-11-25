@@ -2,6 +2,7 @@ package com.github.nomisrev.rx2assertj;
 
 
 import io.reactivex.*;
+import io.reactivex.functions.Predicate;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.subscribers.TestSubscriber;
 import org.assertj.core.api.Condition;
@@ -11,6 +12,8 @@ import org.junit.Test;
 import org.reactivestreams.Subscription;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.condition.AllOf.allOf;
@@ -24,8 +27,8 @@ public class Rx2AssertionsTests {
 
     @Before
     public void setUp() {
-        testSubscriber = new TestSubscriber<>();
-        testObserver = new TestObserver<>();
+        testSubscriber = new TestSubscriber<Integer>();
+        testObserver = new TestObserver<Long>();
         testSubscription = new Subscription() {
             @Override
             public void request(long n) {
@@ -111,37 +114,67 @@ public class Rx2AssertionsTests {
     @Test
     public void testHasErrorWithPredicate() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
-                .hasError(throwable -> throwable.equals(testException));
+                .hasError(new Predicate<Throwable>() {
+                    @Override
+                    public boolean test(Throwable throwable) throws Exception {
+                        return throwable.equals(testException);
+                    }
+                });
     }
 
     @Test(expected = AssertionError.class)
     public void testHasErrorWithPredicateFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
-                .hasError(throwable -> throwable.equals(otherTestException));
+                .hasError(new Predicate<Throwable>() {
+                    @Override
+                    public boolean test(Throwable throwable) throws Exception {
+                        return throwable.equals(otherTestException);
+                    }
+                });
     }
 
     @Test
     public void testHasValuePredicate() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(ObservableBuilder.JEDIS))
-                .hasSingleValue(value -> value.equals(ObservableBuilder.JEDIS));
+                .hasSingleValue(new Predicate<Set<String>>() {
+                    @Override
+                    public boolean test(Set<String> value) throws Exception {
+                        return value.equals(ObservableBuilder.JEDIS);
+                    }
+                });
     }
 
     @Test(expected = AssertionError.class)
     public void testHasValuePredicateFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(ObservableBuilder.JEDIS))
-                .hasSingleValue(value -> value.equals(newLinkedHashSet("something")));
+                .hasSingleValue(new Predicate<Set<String>>() {
+                    @Override
+                    public boolean test(Set<String> value) throws Exception {
+                        return value.equals(newLinkedHashSet("something"));
+                    }
+                });
     }
 
     @Test
     public void testHasValueAtPredicate() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
-                .hasValueAt(1, value -> value.equals(2));
+                .hasValueAt(1, new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer value) throws Exception {
+                        return value.equals(2);
+                    }
+                });
     }
 
     @Test(expected = AssertionError.class)
     public void testHasValueAtPredicateFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
-                .hasValueAt(1, value -> value.equals(3));
+                .hasValueAt(1, new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer value) throws Exception {
+                        return value.equals(3);
+                    }
+                });
     }
 
     @Test
@@ -165,7 +198,7 @@ public class Rx2AssertionsTests {
     @Test(expected = AssertionError.class)
     public void testHasValuesSetFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
-                .hasValueSet(newLinkedHashSet());
+                .hasValueSet(new LinkedHashSet<String>());
     }
 
     @Test
@@ -178,7 +211,7 @@ public class Rx2AssertionsTests {
     @Test(expected = AssertionError.class)
     public void testHasValuesSequenceFails() {
         Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
-                .hasValueSequence(newLinkedHashSet());
+                .hasValueSequence(new LinkedHashSet<String>());
     }
 
     @Test
@@ -226,19 +259,34 @@ public class Rx2AssertionsTests {
     @Test
     public void testHasFailurePredicate() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
-                .hasFailure(error -> error.equals(testException), 1, 2, 3);
+                .hasFailure(new Predicate<Throwable>() {
+                    @Override
+                    public boolean test(Throwable error) throws Exception {
+                        return error.equals(testException);
+                    }
+                }, 1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
     public void testHasFailurePredicateFailsWithDifferentException() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
-                .hasFailure(error -> error.equals(otherTestException), 1, 2, 3);
+                .hasFailure(new Predicate<Throwable>() {
+                    @Override
+                    public boolean test(Throwable error) throws Exception {
+                        return error.equals(otherTestException);
+                    }
+                }, 1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
     public void testHasFailurePredicateFailsWithDifferentValues() {
         Rx2Assertions.assertThatSubscriberTo(ObservableBuilder.getObservableWithTestException(testException, 1, 2, 3))
-                .hasFailure(error -> error.equals(testException), 4, 5, 6);
+                .hasFailure(new Predicate<Throwable>() {
+                    @Override
+                    public boolean test(Throwable error) throws Exception {
+                        return error.equals(testException);
+                    }
+                }, 4, 5, 6);
     }
 
     @Test

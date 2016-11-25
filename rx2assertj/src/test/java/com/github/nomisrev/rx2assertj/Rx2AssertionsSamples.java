@@ -18,8 +18,8 @@ public class Rx2AssertionsSamples {
 
     @Before
     public void setUp() {
-        testSubscriber = new TestSubscriber<>();
-        testObserver = new TestObserver<>();
+        testSubscriber = new TestSubscriber<Integer>();
+        testObserver = new TestObserver<Long>();
         dummyData = new ObservableBuilder();
     }
 
