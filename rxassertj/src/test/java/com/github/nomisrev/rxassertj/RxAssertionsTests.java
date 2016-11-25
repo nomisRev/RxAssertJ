@@ -25,7 +25,7 @@ public class RxAssertionsTests {
     }
 
     @Test
-    public void emptyObservableShouldEmitNothing() throws Exception {
+    public void emptyObservableShouldEmitNothing() {
         RxAssertions.assertThatSubscriberTo(Observable.empty())
                 .emitsNothing()
                 .completes()
@@ -33,7 +33,7 @@ public class RxAssertionsTests {
     }
 
     @Test
-    public void singleItemObservableShouldEmitOneValue() throws Exception {
+    public void singleItemObservableShouldEmitOneValue() {
         RxAssertions.assertThatSubscriberTo(Observable.just("one"))
                 .hasValueCount(1)
                 .completes()
@@ -41,7 +41,7 @@ public class RxAssertionsTests {
     }
 
     @Test
-    public void allItemsShouldMeetCondition() throws Exception {
+    public void allItemsShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNotNullOrEmpty = new Condition<String>() {
@@ -58,7 +58,7 @@ public class RxAssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void allItemsConditionMatcherShouldFail() throws Exception {
+    public void allItemsConditionMatcherShouldFail() {
         Observable<Integer> observable = Observable.just(1);
 
         RxAssertions.assertThatSubscriberTo(observable)
@@ -66,7 +66,7 @@ public class RxAssertionsTests {
     }
 
     @Test
-    public void allItemsShouldMeetCombinedConditions() throws Exception {
+    public void allItemsShouldMeetCombinedConditions() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNotNullOrEmpty = new Condition<String>() {
@@ -89,7 +89,7 @@ public class RxAssertionsTests {
     }
 
     @Test
-    public void allItemsShouldNotMeetCondition() throws Exception {
+    public void allItemsShouldNotMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNull = new Condition<String>() {
@@ -106,7 +106,7 @@ public class RxAssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void noItemMatch() throws Exception {
+    public void noItemMatch() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isNotNullOrEmpty = new Condition<String>() {
@@ -120,7 +120,7 @@ public class RxAssertionsTests {
     }
 
     @Test
-    public void atLeastOneItemShouldMeetCondition() throws Exception {
+    public void atLeastOneItemShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isLuke = new Condition<String>() {
@@ -137,7 +137,7 @@ public class RxAssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void atLeastOneConditionCheckShouldFail() throws Exception {
+    public void atLeastOneConditionCheckShouldFail() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> isDarthVader = new Condition<String>() {
@@ -154,7 +154,7 @@ public class RxAssertionsTests {
     }
 
     @Test
-    public void atLeastTwoItemsShouldMeetCondition() throws Exception {
+    public void atLeastTwoItemsShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -171,7 +171,7 @@ public class RxAssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void atLeastConditionCheckShouldFail() throws Exception {
+    public void atLeastConditionCheckShouldFail() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -188,7 +188,7 @@ public class RxAssertionsTests {
     }
 
     @Test
-    public void atMostTwoItemsShouldMeetCondition() throws Exception {
+    public void atMostTwoItemsShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -205,7 +205,7 @@ public class RxAssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void atMostConditionCheckShouldFail() throws Exception {
+    public void atMostConditionCheckShouldFail() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -222,7 +222,7 @@ public class RxAssertionsTests {
     }
 
     @Test
-    public void exactlyTwoItemsShouldMeetCondition() throws Exception {
+    public void exactlyTwoItemsShouldMeetCondition() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {
@@ -239,7 +239,7 @@ public class RxAssertionsTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void areExactlyConditionCheckShouldFail() throws Exception {
+    public void areExactlyConditionCheckShouldFail() {
         Observable<String> observable = ObservableBuilder.getJediStringEmittingObservable();
 
         Condition<String> containsTheLetterA = new Condition<String>() {

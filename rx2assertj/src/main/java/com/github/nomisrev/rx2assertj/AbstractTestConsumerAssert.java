@@ -3,11 +3,13 @@ package com.github.nomisrev.rx2assertj;
 
 import org.assertj.core.api.AbstractObjectAssert;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.BaseTestConsumer;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 
@@ -187,6 +189,26 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      */
     public final AbstractTestConsumerAssert<T, P> hasSingleValue(Predicate<T> valuePredicate) {
         actual.assertValue(valuePredicate);
+        return this;
+    }
+
+    /**
+     * Asserts that the values received by the TestObserver/TestSubscriber contain the specified values, in any order.
+     * @param values the expected values to be contained in the stream.
+     */
+    @SafeVarargs
+    public final AbstractTestConsumerAssert<T, P> contains(T... values) {
+        Assertions.assertThat(actual.values()).contains(values);
+        return this;
+    }
+
+    /**
+     * Asserts that the values received by the TestObserver/TestSubscriber do not contain any of the specified values.
+     * @param values the expected values to be not contained in the stream.
+     */
+    @SafeVarargs
+    public final AbstractTestConsumerAssert<T, P> doesNotContain(T... values) {
+        Assertions.assertThat(actual.values()).doesNotContain(values);
         return this;
     }
 
