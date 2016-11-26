@@ -1,31 +1,9 @@
 import org.gradle.internal.os.OperatingSystem;
 
-apply plugin: 'java'
-apply plugin: 'jacoco'
-
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
-
 dependencies {
     testCompile(libraries.junit)
     compile(libraries.assertj, libraries.rxjava2)
 }
-
-test {
-    testLogging {
-        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
-        exceptionFormat 'full'
-    }
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-}
-
-check.dependsOn jacocoTestReport
 
 /*
 String java8 = getJavaVersion(8)
