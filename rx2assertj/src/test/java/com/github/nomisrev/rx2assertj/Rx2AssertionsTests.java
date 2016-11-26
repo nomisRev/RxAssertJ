@@ -28,6 +28,16 @@ public class Rx2AssertionsTests {
     private TestSubscriber<Integer> testSubscriber;
     private TestObserver<Long> testObserver;
     private Subscription testSubscription;
+    private static Condition<Object> FAILING_CONDITION = new Condition<Object>() {
+        @Override
+        public boolean matches(Object value) {
+            return false;
+        }
+    };
+    private final String testExceptionMessage = "Some error text";
+    private final Throwable testExceptionCause = new IOException("File doesn't exist");
+    private final Throwable testException = new IllegalStateException(testExceptionMessage, testExceptionCause);
+    private final Throwable otherTestException = new RuntimeIOException("File doesn't exist");
 
     @Before
     public void setUp() {
@@ -44,6 +54,68 @@ public class Rx2AssertionsTests {
         };
     }
 
+    @Test
+    public void subscriptionShouldBeSubscribed() {
+        Rx2Assertions.assertThat(testObserver).isNotSubscribed();
+        testObserver.onSubscribe(testSubscriber);
+        Rx2Assertions.assertThat(testObserver).isSubscribed();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void nonSubscribedObserverShouldFailSubscribedCheck() {
+        Rx2Assertions.assertThat(testObserver).isSubscribed();
+    }
+
+    @Test
+    public void nonSubscribedObserverShouldBeNotSubscribed() {
+        Rx2Assertions.assertThat(testObserver).isNotSubscribed();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void subscribedObserverShouldFailNotSubscribedCheck() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(1)).isNotSubscribed();
+    }
+
+    @Test
+    public void subscriberShouldBeNotSubscribed() {
+        Rx2Assertions.assertThat(testSubscriber).isNotSubscribed();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void subscriptionShouldFailNotSubscribedCheck() {
+        Rx2Assertions.assertThatSubscriberTo(Flowable.just(1)).isNotSubscribed();
+    }
+
+    @Test
+    public void testSubscriberShouldBecomeSubscribed() {
+        Rx2Assertions.assertThat(testSubscriber).isNotSubscribed();
+        testSubscriber.onSubscribe(testSubscription);
+        Rx2Assertions.assertThat(testSubscriber).isSubscribed();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void subscribedCheckShouldFailForNonSubscription() {
+        Rx2Assertions.assertThat(testSubscriber).isSubscribed();
+    }
+
+    @Test
+    public void completingCompletableShouldComplete() {
+        Rx2Assertions.assertThat(Completable.complete())
+                .isComplete();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void neverShouldFailIsCompleteCheck() {
+        Rx2Assertions.assertThatSubscriberTo(Completable.never())
+                .isComplete();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void neverShouldFailCompletesCheck() {
+        Rx2Assertions.assertThatSubscriberTo(Completable.never())
+                .completes();
+    }
+
     @Test(expected = AssertionError.class)
     public void nonCompletionCheckForJustShouldFail() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(1))
@@ -54,6 +126,17 @@ public class Rx2AssertionsTests {
     public void neverObservableShouldNotComplete() {
         Rx2Assertions.assertThatSubscriberTo(Observable.never())
                 .isNotComplete();
+    }
+
+    @Test
+    public void completingObservablesShouldComplete() {
+        Rx2Assertions.assertThatSubscriberTo(Maybe.error(testException)).isTerminated();
+        Rx2Assertions.assertThatSubscriberTo(Maybe.just(1)).isTerminated();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void neverObservableShouldFailTerminationCheck() {
+        Rx2Assertions.assertThat(Maybe.never()).isTerminated();
     }
 
     @Test
@@ -69,26 +152,22 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void completingCompletableShouldComplete() {
-        Rx2Assertions.assertThat(Completable.complete())
-                .isComplete();
+    public void anErrorlessStreamShouldNotResultInErrors() {
+        Rx2Assertions.assertThat(Observable.just(1))
+                .hasNoErrors()
+                .withoutErrors();
     }
 
     @Test(expected = AssertionError.class)
-    public void neverShouldFailCompletionCheck() {
-        Rx2Assertions.assertThatSubscriberTo(Completable.never())
-                .isComplete();
-    }
-
-    @Test
-    public void completingObservablesShouldComplete() {
-        Rx2Assertions.assertThatSubscriberTo(Maybe.error(testException)).isTerminated();
-        Rx2Assertions.assertThatSubscriberTo(Maybe.just(1)).isTerminated();
+    public void anErrorlessStreamShouldFailWithNoErrorCheck() {
+        Rx2Assertions.assertThat(Observable.error(testException))
+                .hasNoErrors();
     }
 
     @Test(expected = AssertionError.class)
-    public void neverObservableShouldFailTerminationCheck() {
-        Rx2Assertions.assertThat(Maybe.never()).isTerminated();
+    public void anErrorlessStreamShouldFailWithWithoutErrorCheck() {
+        Rx2Assertions.assertThat(Observable.error(testException))
+                .withoutErrors();
     }
 
     @Test
@@ -115,6 +194,12 @@ public class Rx2AssertionsTests {
                 .hasError(IllegalStateException.class);
     }
 
+    @Test(expected = AssertionError.class)
+    public void differentErroringObservableShouldNotHaveError() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.error(otherTestException))
+                .hasError(IllegalStateException.class);
+    }
+
     @Test
     public void erroringObservableShouldHavePredicateMatchingError() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
@@ -138,87 +223,6 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void emittedValuesShouldMatchPredicate() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(ObservableBuilder.JEDIS))
-                .hasSingleValue(new Predicate<Set<String>>() {
-                    @Override
-                    public boolean test(Set<String> value) throws Exception {
-                        return value.equals(ObservableBuilder.JEDIS);
-                    }
-                });
-    }
-
-    @Test(expected = AssertionError.class)
-    public void nonMatchingValuePredicateShouldFail() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(ObservableBuilder.JEDIS))
-                .hasSingleValue(new Predicate<Set<String>>() {
-                    @Override
-                    public boolean test(Set<String> value) throws Exception {
-                        return value.equals(newLinkedHashSet("something"));
-                    }
-                });
-    }
-
-    @Test
-    public void emittedValueAtPositionShouldMatchPredicate() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
-                .hasValueAt(1, new Predicate<Integer>() {
-                    @Override
-                    public boolean test(Integer value) throws Exception {
-                        return value.equals(2);
-                    }
-                });
-    }
-
-    @Test(expected = AssertionError.class)
-    public void nonMatchingValueAtPositionPredicateShouldFail() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
-                .hasValueAt(1, new Predicate<Integer>() {
-                    @Override
-                    public boolean test(Integer value) throws Exception {
-                        return value.equals(3);
-                    }
-                });
-    }
-
-    @Test
-    public void emittedValuesShouldMatchCheckInOrder() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
-                .hasValues(1, 2, 3);
-    }
-
-    @Test(expected = AssertionError.class)
-    public void wrongOrderingValueCheckShouldFail() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
-                .hasValues(1, 3, 2);
-    }
-
-    @Test
-    public void emittedValuesShouldMatchValueSet() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
-                .hasValueSet(ObservableBuilder.JEDIS);
-    }
-
-    @Test(expected = AssertionError.class)
-    public void nonMatchingValueSetCheckShouldFail() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
-                .hasValueSet(new LinkedHashSet<String>());
-    }
-
-    @Test
-    public void emittedValuesShouldMatchSequence() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
-                .hasValueSequence(ObservableBuilder.JEDIS);
-    }
-
-
-    @Test(expected = AssertionError.class)
-    public void nonMatchingValueSequenceCheckShouldFail() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
-                .hasValueSequence(new LinkedHashSet<String>());
-    }
-
-    @Test
     public void erroringObservableShouldHaveErrorMessage() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
                 .hasErrorMessage(testExceptionMessage);
@@ -228,18 +232,6 @@ public class Rx2AssertionsTests {
     public void incorrectErrorMessageCheckShouldFail() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
                 .hasErrorMessage("Some other message");
-    }
-
-    @Test
-    public void observableShouldSignalSpecifiedValuesAndComplete() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1, 2, 3, 4))
-                .hasResult(1, 2, 3, 4);
-    }
-
-    @Test(expected = AssertionError.class)
-    public void incorrectResultCheckShouldFail() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1, 2, 3, 4))
-                .hasResult(1, 2, 3);
     }
 
     @Test
@@ -318,6 +310,46 @@ public class Rx2AssertionsTests {
     }
 
     @Test
+    public void singleValueEmittingObservableShouldHaveExactlyOneSpecifiedValue() {
+        Rx2Assertions.assertThat(Single.just(1))
+                .hasSingleValue(1);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void singleValueCheckShouldFailForMultipleEmissions() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(1, 2))
+                .hasSingleValue(1);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void singleValueCheckShouldFailForIncorrectValue() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(2))
+                .hasSingleValue(1);
+    }
+
+    @Test
+    public void emittedValuesShouldMatchPredicate() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(ObservableBuilder.JEDIS))
+                .hasSingleValue(new Predicate<Set<String>>() {
+                    @Override
+                    public boolean test(Set<String> value) throws Exception {
+                        return value.equals(ObservableBuilder.JEDIS);
+                    }
+                });
+    }
+
+    @Test(expected = AssertionError.class)
+    public void nonMatchingValuePredicateShouldFail() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(ObservableBuilder.JEDIS))
+                .hasSingleValue(new Predicate<Set<String>>() {
+                    @Override
+                    public boolean test(Set<String> value) throws Exception {
+                        return value.equals(newLinkedHashSet("something"));
+                    }
+                });
+    }
+
+    @Test
     public void streamShouldContain() {
         Rx2Assertions.assertThat(Flowable.just(1, 2, 3)).contains(1, 2);
     }
@@ -338,6 +370,110 @@ public class Rx2AssertionsTests {
     }
 
     @Test
+    public void emittedValueAtPositionShouldMatchPredicate() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
+                .hasValueAt(1, new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer value) throws Exception {
+                        return value.equals(2);
+                    }
+                });
+    }
+
+    @Test(expected = AssertionError.class)
+    public void nonMatchingValueAtPositionPredicateShouldFail() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
+                .hasValueAt(1, new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer value) throws Exception {
+                        return value.equals(3);
+                    }
+                });
+    }
+
+    @Test
+    public void singleItemObservableShouldEmitOneValue() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just("one"))
+                .hasValueCount(1)
+                .completes()
+                .withoutErrors();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void multipleItemObservableShouldFailEmitOneValueCheck() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just("one","two"))
+                .hasValueCount(1);
+    }
+
+    @Test
+    public void emittedValuesShouldMatchCheckInOrder() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
+                .hasValues(1, 2, 3);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void wrongOrderingValueCheckShouldFail() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.fromArray(1, 2, 3))
+                .hasValues(1, 3, 2);
+    }
+
+    @Test
+    public void emittedValuesShouldMatchValueSet() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
+                .hasValueSet(ObservableBuilder.JEDIS);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void nonMatchingValueSetCheckShouldFail() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
+                .hasValueSet(new LinkedHashSet<String>());
+    }
+
+    @Test
+    public void emittedValuesShouldMatchSequence() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
+                .hasValueSequence(ObservableBuilder.JEDIS);
+    }
+
+
+    @Test(expected = AssertionError.class)
+    public void nonMatchingValueSequenceCheckShouldFail() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.fromIterable(ObservableBuilder.JEDIS))
+                .hasValueSequence(new LinkedHashSet<String>());
+    }
+
+    @Test
+    public void observableShouldSignalSpecifiedValuesAndComplete() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(1, 2, 3, 4))
+                .hasResult(1, 2, 3, 4);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void incorrectResultCheckShouldFail() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.just(1, 2, 3, 4))
+                .hasResult(1, 2, 3);
+    }
+
+    @Test
+    public void emptyObservableShouldNotEmitAnything() {
+        Rx2Assertions.assertThat(Observable.empty())
+                .emitsNothing()
+                .hasNoValues();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void observableShouldFailEmitsNothing() {
+        Rx2Assertions.assertThat(Observable.just(1))
+                .emitsNothing();
+    }
+
+    @Test(expected = AssertionError.class)
+    public void observableShouldFailHasNoValues() {
+        Rx2Assertions.assertThat(Observable.just(1))
+                .hasNoValues();
+    }
+
+    @Test
     public void delayedObservableShouldCompleteInTime() {
         Rx2Assertions.assertThatSubscriberTo(Observable.just(1).delay(250, TimeUnit.MILLISECONDS))
                 .awaitDone(500, TimeUnit.MILLISECONDS)
@@ -352,79 +488,9 @@ public class Rx2AssertionsTests {
     }
 
     @Test
-    public void singleValueEmittingObservableShouldHaveExactlyOneSpecifiedValue() {
-        Rx2Assertions.assertThat(Single.just(1))
-                .hasSingleValue(1);
-    }
-
-    @Test(expected = AssertionError.class)
-    public void singleValueCheckShouldFailForMultipleEmissions() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1, 2))
-                .hasSingleValue(1);
-    }
-
-    @Test(expected = AssertionError.class)
-    public void singleValueCheckShouldFailForIncorrectValue() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(2))
-                .hasSingleValue(1);
-    }
-
-    @Test
-    public void nonSubscribedObserverShouldBeNotSubscribed() {
-        Rx2Assertions.assertThat(testObserver).isNotSubscribed();
-    }
-
-    @Test(expected = AssertionError.class)
-    public void subscribedObserverShouldFailNotSubscribedCheck() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just(1)).isNotSubscribed();
-    }
-
-    @Test
-    public void subscriptionShouldBeSubscribed() {
-        Rx2Assertions.assertThat(testObserver).isNotSubscribed();
-        testObserver.onSubscribe(testSubscriber);
-        Rx2Assertions.assertThat(testObserver).isSubscribed();
-    }
-
-    @Test(expected = AssertionError.class)
-    public void nonSubscribedObserverShouldFailSubscribedCheck() {
-        Rx2Assertions.assertThat(testObserver).isSubscribed();
-    }
-
-    @Test
-    public void subscriberShouldBeNotSubscribed() {
-        Rx2Assertions.assertThat(testSubscriber).isNotSubscribed();
-    }
-
-    @Test(expected = AssertionError.class)
-    public void subscriptionShouldFailNotSubscribedCheck() {
-        Rx2Assertions.assertThatSubscriberTo(Flowable.just(1)).isNotSubscribed();
-    }
-
-    @Test
-    public void testSubscriberShouldBecomeSubscribed() {
-        Rx2Assertions.assertThat(testSubscriber).isNotSubscribed();
-        testSubscriber.onSubscribe(testSubscription);
-        Rx2Assertions.assertThat(testSubscriber).isSubscribed();
-    }
-
-    @Test(expected = AssertionError.class)
-    public void subscribedCheckShouldFailForNonSubscription() {
-        Rx2Assertions.assertThat(testSubscriber).isSubscribed();
-    }
-
-    @Test
     public void emptyObservableShouldEmitNothing() {
         Rx2Assertions.assertThat(Observable.empty())
                 .emitsNothing()
-                .completes()
-                .withoutErrors();
-    }
-
-    @Test
-    public void singleItemObservableShouldEmitOneValue() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just("one"))
-                .hasValueCount(1)
                 .completes()
                 .withoutErrors();
     }
@@ -754,20 +820,4 @@ public class Rx2AssertionsTests {
         constructor.setAccessible(true);
         constructor.newInstance();
     }
-
-    private static Condition<Object> FAILING_CONDITION = new Condition<Object>() {
-        @Override
-        public boolean matches(Object value) {
-            return false;
-        }
-    };
-
-    private final String testExceptionMessage = "Some error text";
-
-    private final Throwable testExceptionCause = new IOException("File doesn't exist");
-
-    private final Throwable testException = new IllegalStateException(testExceptionMessage, testExceptionCause);
-
-    private final Throwable otherTestException = new RuntimeIOException("File doesn't exist");
-
 }

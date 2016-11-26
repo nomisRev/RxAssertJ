@@ -193,7 +193,6 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * Asserts that the values received by the TestObserver/TestSubscriber contain the specified values, in any order.
      * @param values the expected values to be contained in the stream.
      */
-    @SafeVarargs
     public final AbstractTestConsumerAssert<T, P> contains(T... values) {
         Assertions.assertThat(actual.values()).contains(values);
         return this;
@@ -203,7 +202,6 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * Asserts that the values received by the TestObserver/TestSubscriber do not contain any of the specified values.
      * @param values the expected values to be not contained in the stream.
      */
-    @SafeVarargs
     public final AbstractTestConsumerAssert<T, P> doesNotContain(T... values) {
         Assertions.assertThat(actual.values()).doesNotContain(values);
         return this;
@@ -269,7 +267,6 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * @see #hasFailure(Predicate, Object...)
      * @see #hasFailureAndMessage(Class, String, Object...)
      */
-    @SafeVarargs
     public final AbstractTestConsumerAssert<T, P> hasResult(T... values) {
         actual.assertSubscribed()
                 .assertValues(values)

@@ -11,8 +11,6 @@ import static com.github.nomisrev.rxassertj.RxAssertions.assertThat;
 import static com.github.nomisrev.rxassertj.RxAssertions.assertThatSubscriberTo;
 
 public class RxAssertionsSamples {
-    @Rule
-    public RxJavaTestRule rxJavaResetRule = new RxJavaTestRule();
 
     private TestSubscriber<Long> testSubscriber;
     private ObservableBuilder observableBuilder;
@@ -31,7 +29,8 @@ public class RxAssertionsSamples {
 
     @Test
     public void testSomeLongRxing() {
-        RxAssertions.assertThatSubscriberTo(observableBuilder.doSomeLongRxing()).isCompleted();
+        RxAssertions.assertThatSubscriberTo(observableBuilder.doSomeLongRxing()
+                .toObservable().toBlocking()).isCompleted();
     }
 
     //15 : 610 = 2 x 5 x 61
