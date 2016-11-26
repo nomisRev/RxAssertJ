@@ -1,8 +1,3 @@
-apply plugin: 'java'
-
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
-
 dependencies {
     testCompile(libraries.junit)
     compile(libraries.assertj, libraries.rxjava)
