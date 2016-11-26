@@ -1,0 +1,12 @@
+codecov:
+  branch: master
+  
+coverage:
+  status:
+    project:
+      rxassertions:
+        paths:
+          - "rxassertj"
+      rx2assertions:
+        paths:
+          - "rx2assertj"
