@@ -1,17 +1,14 @@
 package com.github.nomisrev.rx2assertj;
 
 
-import org.assertj.core.api.AbstractObjectAssert;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.concurrent.TimeUnit;
-
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.BaseTestConsumer;
-import org.assertj.core.api.Assert;
+import org.assertj.core.api.AbstractObjectAssert;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
+
+import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T, P>> extends AbstractObjectAssert<AbstractTestConsumerAssert<T, P>, P> {
 
