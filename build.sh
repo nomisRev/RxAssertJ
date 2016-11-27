@@ -7,7 +7,7 @@ PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 "$PROJECT_DIR"/gradlew --no-daemon --info clean build codeCoverageReport
 
 if [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
-  echo "Deploying snapshot..."
+  echo "Deploying..."
   "$PROJECT_DIR"/gradlew --no-daemon --info bintrayUpload
-  echo "Snapshot deployed!"
+  echo "Deployed!"
 fi
