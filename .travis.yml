@@ -1,22 +1,21 @@
 language: java
-sudo: false # faster builds
-
+sudo: false
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 before_install:
-  - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
-  - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
-  - export JAVA_HOME=/usr/lib/jvm/java-7-oracle
-  - pip install --user codecov
-
+- export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
+- export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
+- export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+- pip install --user codecov
 script:
-  - ./gradlew assemble check codeCoverageReport
-
+- bash build.sh
 after_success:
-  - codecov
-
+- codecov
 cache:
   directories:
-    - $HOME/.gradle
-    - $HOME/.m2
+  - "$HOME/.gradle"
+  - "$HOME/.m2"
+env:
+  matrix:
+  - secure: fBnu+7ke6GlMIMEviFKuJ82m4PKeP9GxZe3VOqbO2LtjKVoNnFKyHILVxznNiHYwLbnUuPT0ORgF45htT8bZct1rxxrOdsoMwSE5TxHF3RmD7gRCblpXan8pXpP+Cqeh2FDMkgvHxEVzgQtBOkJtTgTzI7Kc+fv4TPRup3beMeFCM+J44nrZzzCIQhNTKeNGA7r24MwlT5pr+U+B496NsQDhAQAhuNy8ATGu4Nw/7e+rmR/p7v2LvJOd42qnldrYhoOnpKtAZVVnBG+ihBxWGb0smhmGlH+RVIzM1FQkoUUpweJ3+y3mJZiZLZsdqno28DUbwexTtv9ref9xNNVR7xd3GVOn4OwxNNzyFJemlYGC8MNsjtLL7e3GdrH38XkaI32ZJGVVLcMVrFFiLgCyqFIBDWl5ixx9glELeEI3XxTGPod4xaqkNkQmetvC3j/2s3uAq9OzwQ2tz49CuME7hMTS2/RN83V7IF08F02yDLAsPRva35UIIpB2Ek0rHkntYU67aUBQtEG2bo1VW7FinPCkIPOxmXeb+jcmiFPWMh7tKexrUdco0qcxAVqctHQK8lvfeIsVdF0wLxiSnJeCc1/4CPZEIjisMX6PbvWP3YamnOhdjPX9D6ip5O/hYlmhriQl/z6c6foe988eZRoqtmWJrx2t5CpuFX2dXuIWy8E=
+  - secure: KA+dyPYqJxBLqIBrpFIMqipHAVcO/eKrEdPznWaBXMvHKDDBPX2QXJwklXzmaGA541T2W1sNxwP+f1NLbQmPRMaAmulfnKNGqvtbLHEE+tlNrKIBtB1dcTnpZvHOyIchUyphco9DDprf6R7Nin361TTpVn3tqrkLP6wZ2G5Uf9MbeQNFUr9fsoYtU33o8YdxMaFCg8iGC7nUS0xp8LiQskQ4vBdmK9wVDzfaOGZQ/jzjhZmZoGzJQ5oy3uCyVQuOcrSmRPsOu45DEZLPz0h6wHBa2hz9QrMluhuDPUAGBGovdtr1Qr0l/fS0CxunrbfEDT64ztAxeKei8o3pyZN/Ls0L4+SVqCD6J9X1rNf7KPTLixHHuMp/m7Yb+qKmhVp3Ao83Q6i1/WnpB8mu5/lWeRaslW+pljiGnpjbZZKV8YuzJ7X34Lg5AwBK40I86olm4tbRCXHTwoup+UwkzyO7lfPRvNoD1WtZZeds26LQODGihGCDgKmT7EiRnt6H1CRcNcBZmpa8OSc7BXUaO/V33j56sJU0GV89q+TbgXxqgdgL2zMtryvUXcXAx2FifLhGp5RN4iiAL9IeEGBPp2yw2ORdeND9lGD8GfN/QKcVbLZyouZgWeUBno05udg6TkVCyaM+nTSTFiCwwE7qQAy98wNf2yiwSVEKuY7FitsDzTw=

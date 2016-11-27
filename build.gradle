@@ -14,35 +14,36 @@ buildscript {
 
     ext.libraries = [//LIBRARIES
 
-                     rxjava              : "io.reactivex:rxjava:$rxjava_version",
-                     rxjava2             : "io.reactivex.rxjava2:rxjava:$rxjava2_version",
-                     assertj             : "org.assertj:assertj-core:$assertj_version",
+                     rxjava : "io.reactivex:rxjava:$rxjava_version",
+                     rxjava2: "io.reactivex.rxjava2:rxjava:$rxjava2_version",
+                     assertj: "org.assertj:assertj-core:$assertj_version",
 
                      // TESTING
-                     junit               : "junit:junit:$junit_version",
+                     junit  : "junit:junit:$junit_version",
 
     ]
 
+    ext.LIB_VERSION = "0.9.0"
+
     repositories {
         jcenter()
-        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
     }
 }
 
 allprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
+    apply plugin: 'com.jfrog.bintray'
 
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
 
     repositories {
         jcenter()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-        maven { url "https://maven.fabric.io/public" }
-        maven { url "http://repository.jetbrains.com/all" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 
     test {

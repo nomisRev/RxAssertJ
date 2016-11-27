@@ -5,6 +5,22 @@ dependencies {
     compile(libraries.assertj, libraries.rxjava2)
 }
 
+bintray {
+    user = System.getenv("BINTRAY_USER")
+    key = System.getenv("BINTRAY_PW")
+    pkg {
+        repo = 'generic'
+        name = 'rx2assertj'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/nomisRev/RxAssertJ.git'
+
+        version{
+            name = LIB_VERSION
+
+        }
+    }
+}
+
 /*
 String java8 = getJavaVersion(8)
 String java7 = getJavaVersion(7)
