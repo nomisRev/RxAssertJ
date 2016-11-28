@@ -7,7 +7,7 @@ dependencies {
 
 bintray {
     user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_PW")
+    key = System.getenv("BINTRAY_KEY")
     pkg {
         repo = 'generic'
         name = 'rx2assertj'
