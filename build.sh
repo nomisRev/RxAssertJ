@@ -1,6 +1,7 @@
 #!/bin/bash
 set -xe
 
+JDK="oraclejdk8"
 BRANCH="master"
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
