@@ -1,30 +1,63 @@
-apply plugin: 'java'
-apply plugin: 'me.tatarka.retrolambda'
+import org.gradle.internal.os.OperatingSystem;
 
 dependencies {
     testCompile(libraries.junit)
     compile(libraries.assertj, libraries.rxjava2)
 }
 
-test {
-    testLogging {
-        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
-        exceptionFormat 'full'
+bintray {
+    user = System.getenv("BINTRAY_USER")
+    key = System.getenv("BINTRAY_KEY")
+    pkg {
+        repo = 'generic'
+        name = 'rx2assertj'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/nomisRev/RxAssertJ.git'
+
+        version{
+            name = LIB_VERSION
+
+        }
     }
 }
 
+/*
 String java8 = getJavaVersion(8)
 String java7 = getJavaVersion(7)
+
 retrolambda {
-    jdk java8 //have tried with JAVA8_HOME
-    oldJdk java7 //have tried with JAVA6_HOME
-    javaVersion JavaVersion.VERSION_1_7 //have matched the above with VERSION_1_6
+    jdk java8
+    oldJdk java7
+    javaVersion JavaVersion.VERSION_1_7
 }
 
-String getJavaVersion(Integer v) {
-    def sout = new StringBuffer()
-    def proc = "/usr/libexec/java_home -v 1.$v".execute()
-    proc.consumeProcessOutput(sout, new StringBuffer())
-    proc.waitForOrKill(1000)
-    return sout.toString().replace("\n", "").replace("\r", "")
-}
+String getJavaVersion(Integer javaVersion) {
+
+    if (OperatingSystem.current().isMacOsX()) {
+        println("Check where JRE is located")
+
+        def sout = new StringBuffer()
+        def proc = "/usr/libexec/java_home -v 1.$javaVersion".execute()
+        proc.consumeProcessOutput(sout, new StringBuffer())
+        proc.waitForOrKill(1000)
+        return sout.toString().replace("\n", "").replace("\r", "")
+
+    } else {
+        println("See JAVA7_HOME and JAVA8_HOME environment variables")
+
+        def javaHomeLocation = ""
+        switch (javaVersion) {
+            case 7:
+                javaHomeLocation = System.getenv("JAVA7_HOME")
+                break
+            case 8:
+                javaHomeLocation = System.getenv("JAVA8_HOME")
+                break
+            default:
+                javaHomeLocation = ""
+        }
+        return javaHomeLocation
+    }
+
+
+}*/

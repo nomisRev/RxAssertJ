@@ -1,9 +1,21 @@
 language: java
-
+sudo: false
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
+before_install:
+- export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
+- export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
+- export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+- pip install --user codecov
+script:
+- bash build.sh
+after_success:
+- codecov
 cache:
   directories:
-    - $HOME/.gradle
-    - $HOME/.m2
+  - "$HOME/.gradle"
+  - "$HOME/.m2"
+env:
+  matrix:
+  - secure: m32+28s4d4zlOzDQO8yZB6RhH5iYkGxZnA3IsdzGcW02IORQXbyPqYqW/rmtOOI2wzSwXnTe6kqTxUKPoLAL1YHpWJ0scVVygKn0W80tMaUl2PQKTrwMosq+vhAoLRmNKfuPRPdCrm0nMUNYdXcQc+YdYyvHWVKQvQW1BIEGbEgJ2ItaFanMh7ZU918Kr/zaONtOf15QXFF7cy4EIjSHGOIFLitjGZhGgoY1tOjAWf1UE+gFqaKVxoRYaF0M584PGgDWQ3xcb6oXnG9XfwK4Ee7nPnPtHFIEtiYug9lWpUT4cWh9p/FsB86RaIwv6B0LDnDoGI+s5vGp+B29I7pKs4A3dKtzdIZdnqnmNVjGhVgfsTYY8G+kVpJHQTwLHI+A0iu/1O4yALjjAImLxgx1jAVaV1zB0udYe0Fs+7wmrnxd6vwSKEVhWBOw2siMsY60NLTlHBSFSFtmTxafFGHzAUnI7RZGGUp5s49ljjsZYi/OXLnW/P2WsZ1weqHtsNB1qVf97VHFwa2vWflWbDAJIOjdKtRgRIkOdwkztjlrQvuPduRUx240rdofi8twz+0X3Rm6AzxhVSKBaCzMRd+CX2Jd6jyerrAlg4JAdpMzc0YjY8e/XyIGTS6/azyEPiWskt8ha9xgZHGVn1qzuVOqWCEvf6unQ9UPYsyD3XDpqqE=
+  - secure: opzXqBfcGeD/yPKS5eM2vCIGYgPKbr6unmBqhXglfUZ11118wv2rJcyTUE3pIhEUeTNq1U8W3KMdpp9mN9hu84g5dNfPndQtnWkRnCB1MUE7lMzqAzJN+/4s/mCiVn1AFVSeHpltKTovEu2PjgAbq1sFLjEmwDJ8bYW/0+dXPD/xlKG1VrHs/p36AYwDmYsO5hAVWkTSpGNZoNwKtozxZaJHBBpRVbB7JlyrXWnCxSyO+ype2MJK/5fhDQ9aqILiBrA3uwQ5SoBzkOw489YGmIxUJL5/UAHiLEtoqeAtQSExRbjV+xanchup/IjdUk+kV/mZqP/uhvPI9BiSInliKI2mjtt+TsPZR4jxPw7ES3R1ym7o9W3Tcg+1fIbmgoNAIGRX0SOPt44OtZzkZLB1q2c+DZMpfgBv5GSGUmQiWGNiBkcTQBnNQ7BSP11gCG8wmF+OyTjEESloKVs9FWbTpht2nbfTDyB28vTWv0vRs3pk+5DX/hvUWeFWwVtgXflBclin98Fg9zYD5zJ91CLklhpE57jFAzHfRMWEoEc5kHti8DtSnMLfcwTJjsFa/7q/IzXksSiKAL+vGJvo8IPrltNZvxHgQqAdthmV/Jm9HK/FvY5W2XLcPtedGsk3SqdTzIo64JrosdfS6o2FgiXCMOk5VRkseCeh95zw1+fL0ss=

@@ -1,13 +1,4 @@
-apply plugin: 'java'
-
 dependencies {
     testCompile(libraries.junit)
     compile(libraries.assertj, libraries.rxjava)
-}
-
-test {
-    testLogging {
-        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
-        exceptionFormat 'full'
-    }
 }
