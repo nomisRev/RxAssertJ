@@ -3,13 +3,38 @@ dependencies {
     compile(libraries.assertj, libraries.rxjava2)
 }
 
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+    // options.encoding = 'UTF-8'
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
 publishing {
     publications {
         Rx2AssertjPublication(MavenPublication) {
             from components.java
             groupId 'com.github.nomisrev.rxassertj'
             artifactId 'rx2assertj'
+
             version LIB_VERSION
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+
+            artifact sourceJar {
+                classifier "javadoc"
+            }
         }
     }
 }
@@ -29,20 +54,4 @@ bintray {
 
         }
     }
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-    // options.encoding = 'UTF-8'
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
 }
