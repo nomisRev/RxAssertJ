@@ -21,20 +21,15 @@ artifacts {
 
 publishing {
     publications {
-        Rx2AssertjPublication(MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
             groupId 'com.github.nomisrev.rxassertj'
             artifactId 'rx2assertj'
 
             version LIB_VERSION
 
-            artifact sourceJar {
-                classifier "sources"
-            }
-
-            artifact sourceJar {
-                classifier "javadoc"
-            }
+            artifact sourcesJar
+            artifact javadocJar
         }
     }
 }
