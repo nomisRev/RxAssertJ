@@ -1,13 +1,23 @@
-import org.gradle.internal.os.OperatingSystem;
-
 dependencies {
     testCompile(libraries.junit)
     compile(libraries.assertj, libraries.rxjava2)
 }
 
+publishing {
+    publications {
+        Rx2AssertjPublication(MavenPublication) {
+            from components.java
+            groupId 'com.github.nomisrev.rxassertj'
+            artifactId 'rx2assertj'
+            version LIB_VERSION
+        }
+    }
+}
+
 bintray {
     user = System.getenv("BINTRAY_USER")
     key = System.getenv("BINTRAY_KEY")
+    publications = ['Rx2AssertjPublication']
     pkg {
         repo = 'Rx2AssertJ'
         name = 'Rx2AssertJ'
@@ -21,43 +31,18 @@ bintray {
     }
 }
 
-/*
-String java8 = getJavaVersion(8)
-String java7 = getJavaVersion(7)
-
-retrolambda {
-    jdk java8
-    oldJdk java7
-    javaVersion JavaVersion.VERSION_1_7
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
 
-String getJavaVersion(Integer javaVersion) {
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+    // options.encoding = 'UTF-8'
+}
 
-    if (OperatingSystem.current().isMacOsX()) {
-        println("Check where JRE is located")
-
-        def sout = new StringBuffer()
-        def proc = "/usr/libexec/java_home -v 1.$javaVersion".execute()
-        proc.consumeProcessOutput(sout, new StringBuffer())
-        proc.waitForOrKill(1000)
-        return sout.toString().replace("\n", "").replace("\r", "")
-
-    } else {
-        println("See JAVA7_HOME and JAVA8_HOME environment variables")
-
-        def javaHomeLocation = ""
-        switch (javaVersion) {
-            case 7:
-                javaHomeLocation = System.getenv("JAVA7_HOME")
-                break
-            case 8:
-                javaHomeLocation = System.getenv("JAVA8_HOME")
-                break
-            default:
-                javaHomeLocation = ""
-        }
-        return javaHomeLocation
-    }
-
-
-}*/
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
