@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Build Status](https://travis-ci.org/nomisRev/RxAssertJ.svg?branch=master)](https://travis-ci.org/nomisRev/RxAssertJ) [![codecov](https://codecov.io/gh/nomisRev/RxAssertJ/branch/master/graph/badge.svg)](https://codecov.io/gh/nomisRev/RxAssertJ)
+[ ![Download](https://api.bintray.com/packages/nomisrev/Rx2AssertJ/Rx2AssertJ/images/download.svg) ](https://bintray.com/nomisrev/Rx2AssertJ/Rx2AssertJ/_latestVersion)
 
 A set of AssertJ assertions geared toward testing rxjava.
 
@@ -77,12 +78,14 @@ You can find other examples in the `test` folder
 
 # Setup
 
-Add it in your `build.gradle`
+### Gradle
+
+Add the JCenter repository in your `build.gradle`
 
 ```groovy
 repositories {
 	...
-	maven { url "https://jitpack.io" }
+	jcenter()
 
 }
 ```
@@ -91,11 +94,36 @@ Add the dependency
 ```groovy
 dependencies {
 	...
-	testCompile 'xxxxxx:$version'
+	testCompile 'com.github.nomisrev.rxassertj:rx2assertj:0.9.0'
 }
 ```
 
-RxAssertions uses RxJava `1.2.2` and RxJava2 `2.0.1` + AssertJ `2.5.0` as dependencies.
+### Maven
+Add JCenter repository in your `pom.xml`
+
+```xml
+<project ...>
+    <repositories>
+      <repository>
+			<id>JCenter</id>
+			<url>http://jcenter.bintray.com</url>
+      </repository>
+    </repositories>
+</project>
+```
+
+Add the dependency
+
+```xml
+<dependency>
+  <groupId>com.github.nomisrev.rxassertj</groupId>
+  <artifactId>rx2assertj</artifactId>
+  <version>0.9.0</version>
+  <scope>test</scope>
+</dependency>
+```
+
+RxAssertions uses RxJava `1.2.3` and RxJava2 `2.0.1` + AssertJ `2.5.0` as dependencies.
 
 # Contributing
 
