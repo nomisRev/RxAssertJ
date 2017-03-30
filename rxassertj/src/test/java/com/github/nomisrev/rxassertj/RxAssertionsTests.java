@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.nomisrev.rxassertj.RxAssertions.assertThatSubscriberTo;
 import static org.assertj.core.condition.AllOf.allOf;
 import static org.assertj.core.util.Sets.newLinkedHashSet;
 
@@ -57,26 +58,26 @@ public class RxAssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void neverShouldFailCompletionCheck() {
-        RxAssertions.assertThatSubscriberTo(Completable.never())
+        assertThatSubscriberTo(Completable.never())
                 .isCompleted();
     }
 
     @Test(expected = AssertionError.class)
     public void nonCompletionCheckForJustShouldFail() {
-        RxAssertions.assertThatSubscriberTo(Observable.just(1))
+        assertThatSubscriberTo(Observable.just(1))
                 .isNotCompleted();
     }
 
     @Test
     public void neverObservableShouldNotComplete() {
-        RxAssertions.assertThatSubscriberTo(Observable.never())
+        assertThatSubscriberTo(Observable.never())
                 .isNotCompleted();
     }
 
     @Test
     public void completingObservablesShouldComplete() {
-        RxAssertions.assertThatSubscriberTo(Single.error(testException)).isTerminated();
-        RxAssertions.assertThatSubscriberTo(Single.just(1)).isTerminated();
+        assertThatSubscriberTo(Single.error(testException)).isTerminated();
+        assertThatSubscriberTo(Single.just(1)).isTerminated();
     }
 
     @Test(expected = AssertionError.class)
@@ -86,13 +87,13 @@ public class RxAssertionsTests {
 
     @Test
     public void neverObservableShouldNotTerminate() {
-        RxAssertions.assertThatSubscriberTo(Observable.never())
+        assertThatSubscriberTo(Observable.never())
                 .isNotTerminated();
     }
 
     @Test(expected = AssertionError.class)
     public void nonTerminationCheckForJustShouldFail() {
-        RxAssertions.assertThatSubscriberTo(Observable.just(1))
+        assertThatSubscriberTo(Observable.just(1))
                 .isNotTerminated();
     }
 
@@ -117,32 +118,64 @@ public class RxAssertionsTests {
 
     @Test
     public void errorObservableShouldThrow() {
-        RxAssertions.assertThatSubscriberTo(Observable.error(testException))
+        assertThatSubscriberTo(Observable.error(testException))
                 .hasError(testException);
     }
 
     @Test(expected = AssertionError.class)
     public void errorCheckShouldFailOnWrongType() {
-        RxAssertions.assertThatSubscriberTo(Observable.error(otherTestException))
+        assertThatSubscriberTo(Observable.error(otherTestException))
                 .hasError(testException);
     }
 
     @Test
     public void erroringObservableShouldHaveCorrectErrorType() {
-        RxAssertions.assertThatSubscriberTo(Observable.error(testException))
+        assertThatSubscriberTo(Observable.error(testException))
                 .hasError(IllegalStateException.class);
     }
 
     @Test(expected = AssertionError.class)
     public void nonErroringObservableShouldNotHaveError() {
-        RxAssertions.assertThatSubscriberTo(Observable.just(1))
+        assertThatSubscriberTo(Observable.just(1))
                 .hasError(IllegalStateException.class);
     }
 
     @Test(expected = AssertionError.class)
     public void differentErroringObservableShouldNotHaveError() {
-        RxAssertions.assertThatSubscriberTo(Observable.error(otherTestException))
+        assertThatSubscriberTo(Observable.error(otherTestException))
                 .hasError(IllegalStateException.class);
+    }
+
+    @Test
+    public void errorObservableShouldReturnWithAssertJStringMatchers() {
+         assertThatSubscriberTo(Observable.error(testException))
+                .hasErrorMessage()
+                .startsWith("Some")
+                .endsWith("text");
+    }
+
+    @Test(expected = AssertionError.class)
+    public void errorObservableShouldFailWithAssertJStringMatchers() {
+        assertThatSubscriberTo(Observable.error(testException))
+                .hasErrorMessage()
+                .doesNotStartWith("Some")
+                .doesNotEndWith("text");
+    }
+
+    @Test
+    public void errorObservableShouldReturnWithAssertJMatchers() {
+        assertThatSubscriberTo(Observable.error(testException))
+                .hasError()
+                .hasCause(testExceptionCause)
+                .hasMessage(testExceptionMessage);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void errorObservableShouldFailWithAssertJMatchers() {
+        assertThatSubscriberTo(Observable.error(testException))
+                .hasError()
+                .hasCause(otherTestException.getCause())
+                .hasMessage(otherTestException.getMessage());
     }
 
     @Test
@@ -153,13 +186,13 @@ public class RxAssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void singleValueCheckShouldFailForMultipleEmissions() {
-        RxAssertions.assertThatSubscriberTo(Observable.just(1, 2))
+        assertThatSubscriberTo(Observable.just(1, 2))
                 .hasSingleValue(1);
     }
 
     @Test(expected = AssertionError.class)
     public void singleValueCheckShouldFailForIncorrectValue() {
-        RxAssertions.assertThatSubscriberTo(Observable.just(2))
+        assertThatSubscriberTo(Observable.just(2))
                 .hasSingleValue(1);
     }
 
@@ -170,17 +203,17 @@ public class RxAssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void incorrectValuesContainsCheckShouldFail() {
-        RxAssertions.assertThatSubscriberTo(Observable.just(1, 2, 3)).contains(4, 5);
+        assertThatSubscriberTo(Observable.just(1, 2, 3)).contains(4, 5);
     }
 
     @Test
     public void streamShouldNotContain() {
-        RxAssertions.assertThatSubscriberTo(Observable.just(1, 2, 3)).doesNotContain(4, 5);
+        assertThatSubscriberTo(Observable.just(1, 2, 3)).doesNotContain(4, 5);
     }
 
     @Test(expected = AssertionError.class)
     public void incorrectValuesNotContainCheckShouldFail() {
-        RxAssertions.assertThatSubscriberTo(Observable.just(1, 2, 3)).doesNotContain(1, 2);
+        assertThatSubscriberTo(Observable.just(1, 2, 3)).doesNotContain(1, 2);
     }
 
     @Test
@@ -197,13 +230,13 @@ public class RxAssertionsTests {
 
     @Test
     public void emittedValuesShouldMatchCheckInOrder() {
-        RxAssertions.assertThatSubscriberTo(Observable.from(Arrays.array(1,2,3)))
+        assertThatSubscriberTo(Observable.from(Arrays.array(1,2,3)))
                 .hasValues(1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
     public void wrongOrderingValueCheckShouldFail() {
-        RxAssertions.assertThatSubscriberTo(Observable.from(Arrays.array(1,2,3)))
+        assertThatSubscriberTo(Observable.from(Arrays.array(1,2,3)))
                 .hasValues(1, 3, 2);
     }
 
@@ -228,21 +261,21 @@ public class RxAssertionsTests {
 
     @Test
     public void delayedObservableShouldCompleteInTime() {
-        RxAssertions.assertThatSubscriberTo(Observable.just(1).delay(250, TimeUnit.MILLISECONDS))
+        assertThatSubscriberTo(Observable.just(1).delay(250, TimeUnit.MILLISECONDS))
                 .awaitDone(500, TimeUnit.MILLISECONDS)
                 .isCompleted();
     }
 
     @Test(expected = AssertionError.class)
     public void tooShortAwaitDoneShouldFail() throws RuntimeException {
-        RxAssertions.assertThatSubscriberTo(Observable.just(1).delay(1000, TimeUnit.MILLISECONDS))
+        assertThatSubscriberTo(Observable.just(1).delay(1000, TimeUnit.MILLISECONDS))
                 .awaitDone(250, TimeUnit.MILLISECONDS)
                 .isCompleted();
     }
 
     @Test
     public void singleItemObservableShouldEmitOneValue() {
-        RxAssertions.assertThatSubscriberTo(Observable.just("one"))
+        assertThatSubscriberTo(Observable.just("one"))
                 .hasValueCount(1)
                 .completes()
                 .withoutErrors();
@@ -250,13 +283,13 @@ public class RxAssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void multipleItemObservableShouldFailEmitOneValueCheck() {
-        RxAssertions.assertThatSubscriberTo(Observable.just("one","two"))
+        assertThatSubscriberTo(Observable.just("one","two"))
                 .hasValueCount(1);
     }
 
     @Test
     public void emptyObservableShouldEmitNothing() {
-        RxAssertions.assertThatSubscriberTo(Observable.empty())
+        assertThatSubscriberTo(Observable.empty())
                 .emitsNothing()
                 .completes()
                 .withoutErrors();
@@ -273,7 +306,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .eachItemMatches(isNotNullOrEmpty);
@@ -283,7 +316,7 @@ public class RxAssertionsTests {
     public void allItemsConditionMatcherShouldFail() {
         Observable<Integer> observable = Observable.just(1);
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .eachItemMatches(FAILING_CONDITION);
     }
 
@@ -304,7 +337,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .eachItemMatches(allOf(isNotNullOrEmpty, isJedi));
@@ -321,7 +354,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .noItemMatches(isNull);
@@ -337,7 +370,7 @@ public class RxAssertionsTests {
                 return value != null && !value.isEmpty();
             }
         };
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .noItemMatches(isNotNullOrEmpty);
     }
 
@@ -352,7 +385,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .atLeastOneItemMatches(isLuke);
@@ -369,7 +402,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .atLeastOneItemMatches(isDarthVader);
@@ -386,7 +419,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .areAtLeast(2, containsTheLetterA)
@@ -404,7 +437,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .areAtLeast(3, containsTheLetterA);
@@ -421,7 +454,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .haveAtLeast(3, containsTheLetterA);
@@ -438,7 +471,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .areAtMost(2, containsTheLetterA)
@@ -456,7 +489,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .areAtMost(1, containsTheLetterA);
@@ -473,7 +506,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .haveAtMost(1, containsTheLetterA);
@@ -490,7 +523,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .areExactly(2, containsTheLetterA)
@@ -508,7 +541,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .areExactly(3, containsTheLetterA);
@@ -525,7 +558,7 @@ public class RxAssertionsTests {
             }
         };
 
-        RxAssertions.assertThatSubscriberTo(observable)
+        assertThatSubscriberTo(observable)
                 .completes()
                 .withoutErrors()
                 .haveExactly(3, containsTheLetterA);

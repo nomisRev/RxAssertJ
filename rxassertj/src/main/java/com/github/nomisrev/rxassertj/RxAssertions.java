@@ -1,9 +1,7 @@
 package com.github.nomisrev.rxassertj;
 
-import org.assertj.core.api.AbstractObjectAssert;
+import org.assertj.core.api.*;
 
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.Condition;
 import rx.Completable;
 import rx.Observable;
 import rx.Single;
@@ -144,6 +142,7 @@ public final class RxAssertions {
         /**
          * Assert that this TestObserver/TestSubscriber received exactly the specified onError event value. The comparison is performed via Objects.equals(); since most exceptions
          * don't implement equals(), this assertion may fail. Use the {@link #hasError(Class)} overload to test against the class of an error instead of an instance of an error.
+         *
          * @param error the error to check
          * @see #hasError(Class)
          */
@@ -164,7 +163,27 @@ public final class RxAssertions {
         }
 
         /**
+         * Assert that this TestObserver/TestSubscriber has an onError event.
+         *
+         * @return an AssertJ assertion class to preform assertions on the error message.
+         */
+        public final AbstractCharSequenceAssert<?, String> hasErrorMessage() {
+            Assertions.assertThat(this.actual.getOnErrorEvents().get(0)).isNotNull();
+            return Assertions.assertThat(this.actual.getOnErrorEvents().get(0).getMessage());
+        }
+
+        /**
+         * Assert that this TestObserver/TestSubscriber has an onError event.
+         *
+         * @return an AssertJ assertion class to preform assertions on the error.
+         */
+        public final AbstractThrowableAssert hasError() {
+            return Assertions.assertThat(this.actual.getOnErrorEvents().get(0)).isNotNull();
+        }
+
+        /**
          * Assert that exactly one onNext value is received which is equal to the given value with respect to Objects.equals.
+         *
          * @param value the value to expect
          */
         public final TestSubscriberAssert<T> hasSingleValue(T value) {
@@ -175,6 +194,7 @@ public final class RxAssertions {
 
         /**
          * Asserts that the values received contain the specified values, in any order.
+         *
          * @param values the expected values to be contained in the stream.
          */
         public final TestSubscriberAssert<T> contains(T... values) {
@@ -184,6 +204,7 @@ public final class RxAssertions {
 
         /**
          * Asserts that the values received do not contain any of the specified values.
+         *
          * @param values the expected values to be not contained in the stream.
          */
         public final TestSubscriberAssert<T> doesNotContain(T... values) {
@@ -194,6 +215,7 @@ public final class RxAssertions {
         /**
          * Asserts that in a stream of onNext events, a certain onNext event indicated by an index a value is
          * received equal to the provided value.
+         *
          * @param index the position to assert on
          * @param value the value that should be received in the onNext value on the given index
          */
@@ -240,17 +262,19 @@ public final class RxAssertions {
         /**
          * Awaits until the internal latch is counted down.
          * <p>If the wait times out or gets interrupted, the TestSubscriber is cancelled.
+         *
          * @param time the waiting time
          * @param unit the time unit of the waiting time
          * @throws RuntimeException wrapping an InterruptedException if the wait is interrupted
          */
         public final TestSubscriberAssert<T> awaitDone(long time, TimeUnit unit) {
-            actual.awaitTerminalEvent(time,unit);
+            actual.awaitTerminalEvent(time, unit);
             return this;
         }
 
         /**
          * Assert that all emitted items meet a {@link Condition}.
+         *
          * @param condition the AssertJ {@link Condition} to check
          */
         public TestSubscriberAssert<T> eachItemMatches(final Condition<? super T> condition) {
@@ -260,6 +284,7 @@ public final class RxAssertions {
 
         /**
          * Assert that no emitted items meet a {@link Condition}.
+         *
          * @param condition the AssertJ {@link Condition} to check
          */
         public TestSubscriberAssert<T> noItemMatches(final Condition<? super T> condition) {
@@ -269,6 +294,7 @@ public final class RxAssertions {
 
         /**
          * Assert that at least one of the emitted items meet a {@link Condition}.
+         *
          * @param condition the AssertJ {@link Condition} to check
          */
         public TestSubscriberAssert<T> atLeastOneItemMatches(final Condition<? super T> condition) {
@@ -278,7 +304,8 @@ public final class RxAssertions {
 
         /**
          * Assert that a {@link Condition} happens at least a certain number of times.
-         * @param times number of times the condition needs to be met at least
+         *
+         * @param times     number of times the condition needs to be met at least
          * @param condition the AssertJ {@link Condition} to check
          */
         public final TestSubscriberAssert<T> haveAtLeast(final int times, final Condition<? super T> condition) {
@@ -288,7 +315,8 @@ public final class RxAssertions {
 
         /**
          * Assert that a {@link Condition} happens at least a certain number of times.
-         * @param times number of times the condition needs to be met at least
+         *
+         * @param times     number of times the condition needs to be met at least
          * @param condition the AssertJ {@link Condition} to check
          */
         public TestSubscriberAssert<T> areAtLeast(final int times, final Condition<? super T> condition) {
@@ -298,7 +326,8 @@ public final class RxAssertions {
 
         /**
          * Assert that a {@link Condition} happens at most a certain number of times.
-         * @param times number of times the condition needs to be met at most
+         *
+         * @param times     number of times the condition needs to be met at most
          * @param condition the AssertJ {@link Condition} to check
          */
         public final TestSubscriberAssert<T> haveAtMost(final int times, final Condition<? super T> condition) {
@@ -308,7 +337,8 @@ public final class RxAssertions {
 
         /**
          * Assert that a {@link Condition} happens at most a certain number of times.
-         * @param times number of times the condition needs to be met at most
+         *
+         * @param times     number of times the condition needs to be met at most
          * @param condition the AssertJ {@link Condition} to check
          */
         public TestSubscriberAssert<T> areAtMost(final int times, final Condition<? super T> condition) {
@@ -318,7 +348,8 @@ public final class RxAssertions {
 
         /**
          * Assert that a {@link Condition} happens at exactly a certain number of times.
-         * @param times number of times the condition needs to be met
+         *
+         * @param times     number of times the condition needs to be met
          * @param condition the AssertJ {@link Condition} to check
          */
         public final TestSubscriberAssert<T> haveExactly(final int times, final Condition<? super T> condition) {
@@ -328,7 +359,8 @@ public final class RxAssertions {
 
         /**
          * Assert that a {@link Condition} happens at exactly a certain number of times.
-         * @param times number of times the condition needs to be met
+         *
+         * @param times     number of times the condition needs to be met
          * @param condition the AssertJ {@link Condition} to check
          */
         public TestSubscriberAssert<T> areExactly(final int times, final Condition<? super T> condition) {

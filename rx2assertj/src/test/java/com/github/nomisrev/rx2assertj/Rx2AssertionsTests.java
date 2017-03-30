@@ -176,6 +176,38 @@ public class Rx2AssertionsTests {
                 .hasError(testException);
     }
 
+    @Test
+    public void errorObservableShouldReturnWithAssertJStringMatchers() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
+                .hasErrorMessage()
+                .startsWith("Some")
+                .endsWith("text");
+    }
+
+    @Test(expected = AssertionError.class)
+    public void errorObservableShouldFailWithAssertJStringMatchers() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
+                .hasErrorMessage()
+                .doesNotStartWith("Some")
+                .doesNotEndWith("text");
+    }
+
+    @Test
+    public void errorObservableShouldReturnWithAssertJMatchers() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
+                .hasError()
+                .hasCause(testExceptionCause)
+                .hasMessage(testExceptionMessage);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void errorObservableShouldFailWithAssertJMatchers() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
+                .hasError()
+                .hasCause(otherTestException.getCause())
+                .hasMessage(otherTestException.getMessage());
+    }
+
     @Test(expected = AssertionError.class)
     public void errorCheckShouldFailOnWrongType() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(otherTestException))

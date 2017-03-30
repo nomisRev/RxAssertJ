@@ -3,11 +3,10 @@ package com.github.nomisrev.rx2assertj;
 
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.BaseTestConsumer;
-import org.assertj.core.api.AbstractObjectAssert;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.Condition;
+import org.assertj.core.api.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T, P>> extends AbstractObjectAssert<AbstractTestConsumerAssert<T, P>, P> {
@@ -81,9 +80,40 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     }
 
     /**
+     * Assert that this TestObserver/TestSubscriber has an onError event.
+     *
+     * @return an AssertJ assertion class to preform assertions on the error message.
+     */
+    public final AbstractCharSequenceAssert<?, String> hasErrorMessage() {
+        hasError(new Predicate<Throwable>() {
+            @Override
+            public boolean test(Throwable throwable) throws Exception {
+                return true;
+            }
+        });
+        return Assertions.assertThat(this.actual.errors().get(0).getMessage());
+    }
+
+    /**
+     * Assert that this TestObserver/TestSubscriber has an onError event.
+     *
+     * @return an AssertJ assertion class to preform assertions on the error.
+     */
+    public final AbstractThrowableAssert hasError() {
+        hasError(new Predicate<Throwable>() {
+            @Override
+            public boolean test(Throwable throwable) throws Exception {
+                return true;
+            }
+        });
+        return Assertions.assertThat(this.actual.errors().get(0));
+    }
+
+    /**
      * Assert that this TestObserver/TestSubscriber received exactly the specified onError event value. The comparison is performed via Objects.equals(); since most exceptions
      * don't implement equals(), this assertion may fail. Use the {@link #hasError(Class)} overload to test against the class of an error instead of an instance of an error or
      * {@link #hasError(Predicate)} to test with different condition.
+     *
      * @param error the error to check
      * @see #hasError(Class)
      * @see #hasError(Predicate)
@@ -95,9 +125,10 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Asserts that this TestObserver/TestSubscriber received exactly one onError event which is an instance of the specified errorClass class.
+     *
      * @param errorClass the error class to expect
      */
-    @SuppressWarnings({ "unchecked", "rawtypes", "cast" })
+    @SuppressWarnings({"unchecked", "rawtypes", "cast"})
     public final AbstractTestConsumerAssert<T, P> hasError(Class<? extends Throwable> errorClass) {
         actual.assertError(errorClass);
         return this;
@@ -105,6 +136,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Asserts that this TestObserver/TestSubscriber received exactly one onError event for which the provided predicate returns true.
+     *
      * @param errorPredicate the predicate that receives the error Throwable and should return true for expected errors.
      */
     public final AbstractTestConsumerAssert<T, P> hasError(Predicate<Throwable> errorPredicate) {
@@ -114,6 +146,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that there is a single error and it has the given message.
+     *
      * @param message the message expected
      */
     public final AbstractTestConsumerAssert<T, P> hasErrorMessage(String message) {
@@ -125,7 +158,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * Assert that the upstream signalled the specified values in order and then failed with a specific class or subclass of Throwable.
      * Follows the functionality of {@link BaseTestConsumer#assertFailure(Class, Object[])}
      *
-     * @param error the expected exception (parent) class
+     * @param error  the expected exception (parent) class
      * @param values the expected values, asserted in order
      */
     public final AbstractTestConsumerAssert<T, P> hasFailure(Class<? extends Throwable> error, T... values) {
@@ -140,10 +173,9 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * Assert that the upstream signalled the specified values in order and then failed with a Throwable for which the provided predicate returns true.
      * Follows the functionality of {@link BaseTestConsumer#assertFailure(Predicate, Object[])}
      *
-     * @param errorPredicate
-     *            the predicate that receives the error Throwable
-     *            and should return true for expected errors.
-     * @param values the expected values, asserted in order
+     * @param errorPredicate the predicate that receives the error Throwable
+     *                       and should return true for expected errors.
+     * @param values         the expected values, asserted in order
      */
     public final AbstractTestConsumerAssert<T, P> hasFailure(Predicate<Throwable> errorPredicate, T... values) {
         actual.assertSubscribed()
@@ -158,9 +190,9 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      * then failed with a specific class or subclass of Throwable and with the given exact error message.
      * Follows the functionality of {@link BaseTestConsumer#assertFailureAndMessage(Class, String, Object[])}
      *
-     * @param error the expected exception (parent) class
+     * @param error   the expected exception (parent) class
      * @param message the expected failure message
-     * @param values the expected values, asserted in order
+     * @param values  the expected values, asserted in order
      */
     public final AbstractTestConsumerAssert<T, P> hasFailureAndMessage(Class<? extends Throwable> error, String message, T... values) {
         actual.assertSubscribed()
@@ -173,6 +205,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that this TestObserver/TestSubscriber received exactly one onNext value which is equal to the given value with respect to Objects.equals.
+     *
      * @param value the value to expect
      */
     public final AbstractTestConsumerAssert<T, P> hasSingleValue(T value) {
@@ -182,6 +215,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Asserts that this TestObserver/TestSubscriber received exactly one onNext value for which the provided predicate returns true.
+     *
      * @param valuePredicate the predicate that receives the onNext value and should return true for the expected value.
      */
     public final AbstractTestConsumerAssert<T, P> hasSingleValue(Predicate<T> valuePredicate) {
@@ -191,6 +225,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Asserts that the values received by the TestObserver/TestSubscriber contain the specified values, in any order.
+     *
      * @param values the expected values to be contained in the stream.
      */
     public final AbstractTestConsumerAssert<T, P> contains(T... values) {
@@ -200,6 +235,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Asserts that the values received by the TestObserver/TestSubscriber do not contain any of the specified values.
+     *
      * @param values the expected values to be not contained in the stream.
      */
     public final AbstractTestConsumerAssert<T, P> doesNotContain(T... values) {
@@ -209,7 +245,8 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Asserts that this TestObserver/TestSubscriber received an onNext value at the given index for the provided predicate returns true.
-     * @param index the position to assert on
+     *
+     * @param index          the position to assert on
      * @param valuePredicate the predicate that receives the onNext value and should return true for the expected value.
      */
     public final AbstractTestConsumerAssert<T, P> hasValueAt(int index, Predicate<T> valuePredicate) {
@@ -219,6 +256,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that this TestObserver/TestSubscriber received the specified number onNext events.
+     *
      * @param count the expected number of onNext events
      */
     public final AbstractTestConsumerAssert<T, P> hasValueCount(int count) {
@@ -228,6 +266,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that the TestObserver/TestSubscriber received only the specified values in the specified order.
+     *
      * @param values the values expected
      * @see #hasValueSet(Collection)
      */
@@ -251,6 +290,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that the TestObserver/TestSubscriber received only the specified sequence of values in the same order.
+     *
      * @param sequence the sequence of expected values in order
      */
     public final AbstractTestConsumerAssert<T, P> hasValueSequence(Iterable<? extends T> sequence) {
@@ -293,17 +333,19 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     /**
      * Awaits until the internal latch is counted down.
      * <p>If the wait times out or gets interrupted, the TestObserver/TestSubscriber is cancelled.
+     *
      * @param time the waiting time
      * @param unit the time unit of the waiting time
      * @throws RuntimeException wrapping an InterruptedException if the wait is interrupted
      */
     public final AbstractTestConsumerAssert<T, P> awaitDone(long time, TimeUnit unit) {
-        actual.awaitDone(time,unit);
+        actual.awaitDone(time, unit);
         return this;
     }
 
     /**
      * Assert that all emitted items meet a {@link Condition}.
+     *
      * @param condition the AssertJ {@link Condition} to check
      */
     public final AbstractTestConsumerAssert<T, P> eachItemMatches(final Condition<? super T> condition) {
@@ -313,6 +355,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that no emitted items meet a {@link Condition}.
+     *
      * @param condition the AssertJ {@link Condition} to check
      */
     public final AbstractTestConsumerAssert<T, P> noItemMatches(final Condition<? super T> condition) {
@@ -322,6 +365,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that at least one of the emitted items meet a {@link Condition}.
+     *
      * @param condition the AssertJ {@link Condition} to check
      */
     public final AbstractTestConsumerAssert<T, P> atLeastOneItemMatches(final Condition<? super T> condition) {
@@ -331,7 +375,8 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that a {@link Condition} happens at least a certain number of times.
-     * @param times number of times the condition needs to be met at least
+     *
+     * @param times     number of times the condition needs to be met at least
      * @param condition the AssertJ {@link Condition} to check
      */
     public final AbstractTestConsumerAssert<T, P> haveAtLeast(final int times, final Condition<? super T> condition) {
@@ -341,7 +386,8 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that a {@link Condition} happens at least a certain number of times.
-     * @param times number of times the condition needs to be met at least
+     *
+     * @param times     number of times the condition needs to be met at least
      * @param condition the AssertJ {@link Condition} to check
      */
     public final AbstractTestConsumerAssert<T, P> areAtLeast(final int times, final Condition<? super T> condition) {
@@ -351,7 +397,8 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that a {@link Condition} happens at most a certain number of times.
-     * @param times number of times the condition needs to be met at most
+     *
+     * @param times     number of times the condition needs to be met at most
      * @param condition the AssertJ {@link Condition} to check
      */
     public final AbstractTestConsumerAssert<T, P> haveAtMost(final int times, final Condition<? super T> condition) {
@@ -361,7 +408,8 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that a {@link Condition} happens at most a certain number of times.
-     * @param times number of times the condition needs to be met at most
+     *
+     * @param times     number of times the condition needs to be met at most
      * @param condition the AssertJ {@link Condition} to check
      */
     public final AbstractTestConsumerAssert<T, P> areAtMost(final int times, final Condition<? super T> condition) {
@@ -371,7 +419,8 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that a {@link Condition} happens at exactly a certain number of times.
-     * @param times number of times the condition needs to be met
+     *
+     * @param times     number of times the condition needs to be met
      * @param condition the AssertJ {@link Condition} to check
      */
     public final AbstractTestConsumerAssert<T, P> haveExactly(final int times, final Condition<? super T> condition) {
@@ -381,7 +430,8 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
 
     /**
      * Assert that a {@link Condition} happens at exactly a certain number of times.
-     * @param times number of times the condition needs to be met
+     *
+     * @param times     number of times the condition needs to be met
      * @param condition the AssertJ {@link Condition} to check
      */
     public final AbstractTestConsumerAssert<T, P> areExactly(final int times, final Condition<? super T> condition) {
