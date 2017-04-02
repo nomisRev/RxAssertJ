@@ -6,15 +6,23 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import org.assertj.core.util.Sets;
 
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.util.Sets.newLinkedHashSet;
 
 public final class ObservableBuilder {
 
-    static Set<String> JEDIS = newLinkedHashSet("Luke", "Yoda", "Obiwan");
+    static final String LUKE = "Luke";
+
+    static final String YODA = "Yoda";
+
+    static final String OBIWAN = "Obiwan";
+
+    static Set<String> JEDIS = newLinkedHashSet(LUKE, YODA, OBIWAN);
 
     static <T> Observable<T> getObservableWithTestException(Throwable testException, T... t) {
         return Observable.<T>fromArray(t).concatWith(Observable.<T>error(testException));
@@ -22,6 +30,18 @@ public final class ObservableBuilder {
 
     static Observable<String> getJediStringEmittingObservable() {
         return Observable.fromIterable(JEDIS);
+    }
+
+    static Observable<List<String>> getJediListEmittingObservable(){
+        return Observable.just(singletonList(LUKE), singletonList(YODA), singletonList(OBIWAN));
+    }
+
+    static Observable<String[]> getJediArrayEmittingObservable(){
+        return Observable.just(new String[]{LUKE},new String[]{YODA}, new String[]{OBIWAN});
+    }
+
+    static Observable<Set<String>> getJediSetEmittingObservable(){
+        return Observable.just(newLinkedHashSet(LUKE), newLinkedHashSet(YODA),(Set<String>) newLinkedHashSet(OBIWAN));
     }
 
     public Observable<Long> doSomeRxing() {

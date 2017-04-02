@@ -2,24 +2,32 @@ package com.github.nomisrev.rx2assertj;
 
 
 import io.reactivex.*;
+import io.reactivex.Observable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.subscribers.TestSubscriber;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.assertj.core.api.exception.RuntimeIOException;
+import org.assertj.core.data.Index;
+import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.reactivestreams.Subscription;
+import sun.util.resources.cldr.yo.CurrencyNames_yo;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.nomisrev.rx2assertj.ObservableBuilder.LUKE;
+import static com.github.nomisrev.rx2assertj.ObservableBuilder.OBIWAN;
+import static com.github.nomisrev.rx2assertj.ObservableBuilder.YODA;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.condition.AllOf.allOf;
 import static org.assertj.core.util.Sets.newLinkedHashSet;
 
@@ -350,6 +358,96 @@ public class Rx2AssertionsTests {
     }
 
     @Test
+    public void onlyOneListShouldBeEmittedAndItShouldBeAssertableWithIterableAssertions() {
+        Rx2Assertions.assertThat(ObservableBuilder.getJediListEmittingObservable().take(1))
+                .hasSingleList()
+                .has(new Condition<Object>() {
+                    @Override
+                    public boolean matches(Object value) {
+                        return value.equals(singletonList(LUKE));
+                    }
+                });
+    }
+
+    @Test
+    public void emittedListsShouldBeAssertableWithListAssertions() {
+        Rx2Assertions.assertThat(ObservableBuilder.getJediListEmittingObservable())
+                .hasListAtPosition(1)
+                .hasSize(1)
+                .has(new Condition<Object>() {
+                    @Override
+                    public boolean matches(Object value) {
+                        return value.equals(YODA);
+                    }
+                }, Index.atIndex(0));
+    }
+
+    @Test
+    public void emittedListsShouldBeAssertableWithTypedListAssertions() throws Exception {
+        Rx2Assertions.assertThat(ObservableBuilder.getJediListEmittingObservable())
+                .<String>hasListAtPosition(1)
+                .hasSize(1)
+                .has(new Condition<String>() {
+                    @Override
+                    public boolean matches(String value) {
+                        return value.startsWith("Yod") && value.endsWith("a");
+                    }
+                }, Index.atIndex(0));
+    }
+
+    @Test
+    public void emittedListsShouldBeFlattenedAssertableWithTypedListAssertions() throws Exception {
+        Rx2Assertions.assertThat(ObservableBuilder.getJediListEmittingObservable())
+                .<String>withFlattenedList()
+                .is(new Condition<List<? extends String>>() {
+                    @Override
+                    public boolean matches(List<? extends String> value) {
+                        return value.equals(asList(LUKE, YODA, OBIWAN));
+                    }
+                });
+
+    }
+
+    @Test
+    public void emittedArrayShouldBeAssertableWithIterableAssertions() {
+        Rx2Assertions.assertThat(ObservableBuilder.getJediArrayEmittingObservable().take(1))
+                .hasSingleArray()
+                .has(new Condition<Object>() {
+                    @Override
+                    public boolean matches(Object value) {
+                        return Arrays.equals((Object[]) value, new String[]{ LUKE});
+                    }
+                });
+    }
+
+    @Test
+    public void emittedSetShouldBeAssertableWithIterableAssertions() throws Exception {
+        Rx2Assertions.assertThat(ObservableBuilder.getJediSetEmittingObservable().take(1))
+                .hasSingleIterable()
+                .has(new Condition<Iterable<?>>() {
+                    @Override
+                    public boolean matches(Iterable<?> value) {
+                        return value.equals(Sets.newLinkedHashSet(LUKE));
+                    }
+                });
+
+    }
+
+
+    @Test
+    public void emittedSetShouldBeAssertableWithTypedIterableAssertions() throws Exception {
+        Rx2Assertions.assertThat(ObservableBuilder.getJediSetEmittingObservable())
+                .<String>hasIterableAtPosition(1)
+                .hasSize(1)
+               .are(new Condition<String>() {
+                   @Override
+                   public boolean matches(String value) {
+                       return value.startsWith("Yod") && value.endsWith("a");
+                   }
+               });
+    }
+
+    @Test
     public void streamShouldContain() {
         Rx2Assertions.assertThat(Flowable.just(1, 2, 3)).contains(1, 2);
     }
@@ -401,7 +499,7 @@ public class Rx2AssertionsTests {
 
     @Test(expected = AssertionError.class)
     public void multipleItemObservableShouldFailEmitOneValueCheck() {
-        Rx2Assertions.assertThatSubscriberTo(Observable.just("one","two"))
+        Rx2Assertions.assertThatSubscriberTo(Observable.just("one", "two"))
                 .hasValueCount(1);
     }
 
