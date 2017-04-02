@@ -3,9 +3,11 @@ package com.github.nomisrev.rx2assertj;
 
 import io.reactivex.functions.Predicate;
 import io.reactivex.observers.BaseTestConsumer;
-import org.assertj.core.api.*;
+import org.assertj.core.api.AbstractObjectAssert;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Condition;
 
-import java.util.*;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T, P>> extends AbstractObjectAssert<AbstractTestConsumerAssert<T, P>, P> {
@@ -185,75 +187,6 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
     public final AbstractTestConsumerAssert<T, P> hasSingleValue(Predicate<T> valuePredicate) {
         actual.assertValue(valuePredicate);
         return this;
-    }
-
-    /**
-     * Asserts that this TestObserver/TestSubscriber received exactly one onNext value of type List<T>
-     * @return an AssertJ List assertion class
-     */
-    public final <E> AbstractListAssert<?, List<? extends E>, E, ObjectAssert<E>> hasSingleList() {
-        final List<E> list = (List<E>) actual.assertValueCount(1).values().get(0);
-        return Assertions.assertThat(list);
-    }
-
-    /**
-     * Asserts the List of type T at the given position.
-     * @param position of the list you want to assert
-     * @return an AssertJ List assertion class
-     */
-    public final <E> AbstractListAssert<?, List<? extends E>, E, ObjectAssert<E>> hasListAtPosition(final int position) {
-        final List<E> list = (List<E>) actual.values().get(position);
-        return Assertions.assertThat(list);
-    }
-
-    /**
-     * Asserts the flattened list of type T.
-     * @return an AssertJ Iterable assertion class
-     */
-    public final <E> AbstractListAssert<?, List<? extends E>, E, ObjectAssert<E>> withFlattenedList() {
-        final List<E> flattenedList = new ArrayList<E>();
-        for (T t : actual.values()) {
-            flattenedList.addAll((List<E>) t);
-        }
-        return Assertions.assertThat(flattenedList);
-    }
-
-    /**
-     * Asserts that this TestObserver/TestSubscriber received one onNext value of type Array<T>
-     * @return an AssertJ Iterable assertion class
-     */
-    public final <E> AbstractObjectArrayAssert<?, E> hasSingleArray() {
-        final E[] array = (E[]) actual.assertValueCount(1).values().get(0);
-        return Assertions.assertThat(array);
-    }
-
-    /**
-     * Asserts the Array of type T at the given position.
-     * @param position of the iterable you want to assert
-     * @return an AssertJ Iterable assertion class
-     */
-    public final <E> AbstractObjectArrayAssert<?, E> hasArrayAtPosition(final int position) {
-        final E[] array = (E[]) actual.values().get(position);
-        return Assertions.assertThat(array);
-    }
-
-    /**
-     * Asserts that this TestObserver/TestSubscriber received exactly one onNext value of type Iterable<T>
-     * @return an AssertJ Iterable assertion class
-     */
-    public final <E> AbstractIterableAssert<?, Iterable<? extends E>, E, ObjectAssert<E>> hasSingleIterable() {
-        final Iterable<E> list = (Iterable<E>) actual.assertValueCount(1).values().get(0);
-        return Assertions.assertThat(list);
-    }
-
-    /**
-     * Asserts the Iterable of type T at the given position.
-     * @param position of the iterable you want to assert
-     * @return an AssertJ Iterable assertion class
-     */
-    public final <E> AbstractIterableAssert<?, Iterable<? extends E>, E, ObjectAssert<E>> hasIterableAtPosition(final int position) {
-        final Iterable<E> list = (Iterable<E>) actual.values().get(position);
-        return Assertions.assertThat(list);
     }
 
     /**
