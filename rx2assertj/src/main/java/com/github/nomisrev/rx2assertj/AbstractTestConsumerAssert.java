@@ -84,7 +84,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      *
      * @return an AssertJ assertion class to preform assertions on the error message.
      */
-    public final AbstractCharSequenceAssert<?, String> hasErrorMessage() {
+    public final AbstractCharSequenceAssert<?, String> hasErrorMessageThat() {
         hasError(new Predicate<Throwable>() {
             @Override
             public boolean test(Throwable throwable) throws Exception {
@@ -99,7 +99,7 @@ public abstract class AbstractTestConsumerAssert<T, P extends BaseTestConsumer<T
      *
      * @return an AssertJ assertion class to preform assertions on the error.
      */
-    public final AbstractThrowableAssert hasError() {
+    public final AbstractThrowableAssert hasErrorThat() {
         hasError(new Predicate<Throwable>() {
             @Override
             public boolean test(Throwable throwable) throws Exception {

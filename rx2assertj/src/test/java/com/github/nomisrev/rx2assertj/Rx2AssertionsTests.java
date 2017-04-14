@@ -179,7 +179,7 @@ public class Rx2AssertionsTests {
     @Test
     public void errorObservableShouldReturnWithAssertJStringMatchers() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
-                .hasErrorMessage()
+                .hasErrorMessageThat()
                 .startsWith("Some")
                 .endsWith("text");
     }
@@ -187,15 +187,24 @@ public class Rx2AssertionsTests {
     @Test(expected = AssertionError.class)
     public void errorObservableShouldFailWithAssertJStringMatchers() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
-                .hasErrorMessage()
+                .hasErrorMessageThat()
                 .doesNotStartWith("Some")
                 .doesNotEndWith("text");
     }
 
     @Test
+    public void errorObservableShouldReturnWithAssertJErrorMatcher() {
+        Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
+                .hasError(testException)
+                .hasErrorThat()
+                .hasCause(testExceptionCause)
+                .hasMessage(testExceptionMessage);
+    }
+
+    @Test
     public void errorObservableShouldReturnWithAssertJMatchers() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
-                .hasError()
+                .hasErrorThat()
                 .hasCause(testExceptionCause)
                 .hasMessage(testExceptionMessage);
     }
@@ -203,7 +212,7 @@ public class Rx2AssertionsTests {
     @Test(expected = AssertionError.class)
     public void errorObservableShouldFailWithAssertJMatchers() {
         Rx2Assertions.assertThatSubscriberTo(Observable.error(testException))
-                .hasError()
+                .hasErrorThat()
                 .hasCause(otherTestException.getCause())
                 .hasMessage(otherTestException.getMessage());
     }
