@@ -4,13 +4,10 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.assertj.core.api.exception.RuntimeIOException;
 import org.assertj.core.util.Arrays;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import rx.Completable;
 import rx.Observable;
 import rx.Single;
-import rx.observers.TestSubscriber;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -149,7 +146,7 @@ public class RxAssertionsTests {
     @Test
     public void errorObservableShouldReturnWithAssertJStringMatchers() {
          assertThatSubscriberTo(Observable.error(testException))
-                .hasErrorMessage()
+                .hasErrorMessageThat()
                 .startsWith("Some")
                 .endsWith("text");
     }
@@ -157,7 +154,7 @@ public class RxAssertionsTests {
     @Test(expected = AssertionError.class)
     public void errorObservableShouldFailWithAssertJStringMatchers() {
         assertThatSubscriberTo(Observable.error(testException))
-                .hasErrorMessage()
+                .hasErrorMessageThat()
                 .doesNotStartWith("Some")
                 .doesNotEndWith("text");
     }
@@ -165,7 +162,7 @@ public class RxAssertionsTests {
     @Test
     public void errorObservableShouldReturnWithAssertJMatchers() {
         assertThatSubscriberTo(Observable.error(testException))
-                .hasError()
+                .hasErrorThat()
                 .hasCause(testExceptionCause)
                 .hasMessage(testExceptionMessage);
     }
@@ -173,7 +170,7 @@ public class RxAssertionsTests {
     @Test(expected = AssertionError.class)
     public void errorObservableShouldFailWithAssertJMatchers() {
         assertThatSubscriberTo(Observable.error(testException))
-                .hasError()
+                .hasErrorThat()
                 .hasCause(otherTestException.getCause())
                 .hasMessage(otherTestException.getMessage());
     }

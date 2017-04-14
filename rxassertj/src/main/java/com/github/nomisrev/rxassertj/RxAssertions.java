@@ -167,7 +167,7 @@ public final class RxAssertions {
          *
          * @return an AssertJ assertion class to preform assertions on the error message.
          */
-        public final AbstractCharSequenceAssert<?, String> hasErrorMessage() {
+        public final AbstractCharSequenceAssert<?, String> hasErrorMessageThat() {
             Assertions.assertThat(this.actual.getOnErrorEvents().get(0)).isNotNull();
             return Assertions.assertThat(this.actual.getOnErrorEvents().get(0).getMessage());
         }
@@ -177,7 +177,7 @@ public final class RxAssertions {
          *
          * @return an AssertJ assertion class to preform assertions on the error.
          */
-        public final AbstractThrowableAssert hasError() {
+        public final AbstractThrowableAssert hasErrorThat() {
             return Assertions.assertThat(this.actual.getOnErrorEvents().get(0)).isNotNull();
         }
 
